@@ -32,6 +32,7 @@ export default function ZoomableImage({
         src={src}
         alt={alt}
         sizes={sizes}
+        quality={100}
         onClick={() => setOpen(true)}
         className={`cursor-zoom-in ${className}`}
       />
@@ -55,6 +56,7 @@ export default function ZoomableImage({
             <Image
               src={src}
               alt={alt}
+              quality={100}
               onClick={(e) => e.stopPropagation()}
               className="relative z-0 max-h-[90vh] max-w-[90vw] scale-100 object-contain transition-transform duration-300 ease-out motion-reduce:transition-none starting:scale-95"
             />

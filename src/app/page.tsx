@@ -148,6 +148,7 @@ export default function Home() {
                 src={c.image}
                 alt={c.title}
                 sizes="550px"
+                quality={100}
                 className="h-full w-full object-cover"
               />
             );
