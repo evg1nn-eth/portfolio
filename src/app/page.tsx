@@ -121,7 +121,12 @@ export default function Home() {
                 LinkedIn
               </a>
               , check out my{" "}
-              <a href="#" className={linkUnderline}>
+              <a
+                href="https://drive.google.com/file/d/1UKT7WVxkx7lI7VfSlhsgCyqRDuPtMbV9/view?usp=drive_open"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkUnderline}
+              >
                 CV
               </a>
               , or reach me via{" "}
