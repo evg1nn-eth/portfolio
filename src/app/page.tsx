@@ -122,7 +122,7 @@ export default function Home() {
               </a>
               , check out my{" "}
               <a
-                href="https://drive.google.com/file/d/1UKT7WVxkx7lI7VfSlhsgCyqRDuPtMbV9/view?usp=drive_open"
+                href="https://drive.google.com/file/d/1UKT7WVxkx7lI7VfSlhsgCyqRDuPtMbV9/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={linkUnderline}
