@@ -1,92 +1,199 @@
-import CaseCard, { type CaseStudy } from "./components/CaseCard";
+import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
 import PayButton from "./components/PayButton";
-import ghostVpn from "./images/ghost-vpn.png";
-import personalFinanceTracker from "./images/personal-finance-tracker.png";
+import ghostVpnImage from "./images/ghost-vpn.png";
+import personalFinanceTrackerImage from "./images/personal-finance-tracker.png";
 
-const columns: CaseStudy[][] = [
-  [
-    {
-      title: "Ghost VPN",
-      dates: "Telegram Mini App",
-      image: ghostVpn,
-      aspectRatio: "628 / 400",
-      clickable: false,
-    },
-  ],
-  [
-    {
-      title: "Personal Finance Tracker",
-      dates: "Concept",
-      image: personalFinanceTracker,
-      aspectRatio: "628 / 300",
-    },
-  ],
+type CaseRow = {
+  title: string;
+  dates: string;
+  year: string;
+  soon?: boolean;
+  image: StaticImageData;
+  href?: string;
+};
+
+const cases: CaseRow[] = [
+  {
+    title: "Ghost VPN",
+    dates: "Telegram Mini App",
+    year: "2026",
+    soon: true,
+    image: ghostVpnImage,
+  },
+  {
+    title: "Personal Finance Tracker",
+    dates: "Concept",
+    year: "2025",
+    image: personalFinanceTrackerImage,
+    href: "/personal-finance-tracker",
+  },
 ];
+
+const textClass =
+  "text-[14px] leading-[20px] tracking-normal text-[#111111] dark:text-zinc-100";
+
+const linkUnderline =
+  "relative inline before:absolute before:inset-x-0 before:bottom-0 before:h-px before:rounded-sm before:bg-[#d9d9d9] before:transition-colors before:duration-200 hover:before:bg-[#666] dark:before:bg-zinc-600 dark:hover:before:bg-zinc-300";
+
+const caseFrameClass =
+  "relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-100 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none pointer-fine:hover:scale-[0.97] dark:bg-zinc-900";
+
+const caseFrameStyle = { height: "300px" };
+
+function staggerStyle(i: number) {
+  return { "--stagger-i": i } as React.CSSProperties;
+}
 
 export default function Home() {
   return (
-    <div className="flex-1 bg-white">
-      <div className="mx-auto max-w-[1280px] px-6 pt-16 pb-24 sm:px-[70px] sm:pt-[70px]">
-        <header>
-          <h1 className="text-[20px] leading-[24px] font-normal text-zinc-800">
-            Evgeny Merzalov
-          </h1>
+    <div className="flex-1 bg-[#FDFDFC] transition-colors duration-300 dark:bg-[#0a0a0a]">
+      <div className="mx-auto max-w-[582px] px-4 pt-16 pb-24">
+        <header className="flex flex-col items-start text-left">
+          <div className="stagger-item flex flex-col" style={staggerStyle(0)}>
+            <h1 className={`${textClass} font-medium`}>Evgeny Merzalov</h1>
+            <span className="text-[14px] leading-[20px] tracking-normal text-zinc-400">
+              Updated Jul 27, 2026
+            </span>
+          </div>
 
-          <div className="mt-8 text-pretty text-[20px] leading-[24px] font-normal text-zinc-800">
-            <p>
-              Interface designer and former professional footballer ⚽️, now
-              fully into design. See full experience in 🔗{" "}
+          <div className="mt-6 flex flex-col gap-4">
+            <p
+              className={`${textClass} stagger-item font-normal`}
+              style={staggerStyle(1)}
+            >
+              I&apos;m Evgeny, an interface designer.
+            </p>
+            <p
+              className={`${textClass} stagger-item font-normal`}
+              style={staggerStyle(2)}
+            >
+              Before design, I spent most of my life playing football
+              professionally. When that chapter ended, I went all in on
+              design.
+            </p>
+            <p
+              className={`${textClass} stagger-item font-normal`}
+              style={staggerStyle(3)}
+            >
+              I currently work at the{" "}
               <a
-                href="/cv.pdf"
+                href="https://kringga.agency/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-zinc-500"
+                className={linkUnderline}
               >
+                Digital Agency Kringga
+              </a>
+              , focused on mobile and product design. My last project was
+              a Telegram Mini App, where I designed onboarding flows for
+              every platform and built a referral program from scratch.
+            </p>
+            <p
+              className={`${textClass} stagger-item font-normal`}
+              style={staggerStyle(4)}
+            >
+              On the side, I&apos;m exploring design engineering, learning
+              how to take designs from Figma straight into working code.
+              Lately I&apos;ve also been getting into typography and
+              lettering.
+            </p>
+            <p
+              className={`${textClass} stagger-item font-normal`}
+              style={staggerStyle(5)}
+            >
+              You can find me on{" "}
+              <a
+                href="https://t.me/evg1nn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkUnderline}
+              >
+                Telegram
+              </a>{" "}
+              &amp;{" "}
+              <a
+                href="https://www.linkedin.com/in/evgeny-merzalov-4923403b8/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkUnderline}
+              >
+                LinkedIn
+              </a>
+              , check out my{" "}
+              <a href="#" className={linkUnderline}>
                 CV
               </a>
-              .
-            </p>
-            <p className="mt-5">
-              On the side, I&apos;m exploring design engineering 🛠️, learning
-              how to take designs from Figma straight into working code.
-              <br />
-              Lately I&apos;ve also been getting into typography and
-              lettering ✍️.
-            </p>
-            <p className="mt-5">
-              Always happy to meet new people, whether to work together or
-              just chat. Email me at{" "}
+              , or reach me via{" "}
               <a
                 href="mailto:evgeny1merzalov@yandex.ru"
-                className="hover:text-zinc-500"
+                className={linkUnderline}
               >
-                evgeny1merzalov@yandex.ru
+                email
               </a>
+              .
             </p>
           </div>
         </header>
 
-        <section className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:items-start">
-          {columns.map((column, i) => (
-            <div key={i} className="flex flex-col gap-6">
-              {column.map((project) => (
-                <CaseCard key={project.title} project={project} />
-              ))}
-              {i === 1 && (
-                <div
-                  className="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-100 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none pointer-fine:hover:scale-[0.97]"
-                  style={{ aspectRatio: "628 / 400" }}
-                >
-                  <PayButton />
-                  <div className="absolute bottom-4 left-4 flex flex-wrap gap-2 opacity-0 transition-opacity duration-300 ease-out motion-reduce:transition-none group-hover:opacity-100">
-                    <span className="rounded-lg bg-white px-4 py-2.5 text-[14px] font-normal text-zinc-800">
-                      Action Button
-                    </span>
+        <section className="mt-12 flex flex-col gap-[36px]">
+          {cases.map((c, i) => {
+            const cover = (
+              <Image
+                src={c.image}
+                alt={c.title}
+                sizes="550px"
+                className="h-full w-full object-cover"
+              />
+            );
+
+            return (
+              <div
+                key={c.title}
+                className="stagger-item flex flex-col items-center gap-2"
+                style={staggerStyle(6 + i)}
+              >
+                {c.href ? (
+                  <Link
+                    href={c.href}
+                    className={caseFrameClass}
+                    style={caseFrameStyle}
+                  >
+                    {cover}
+                  </Link>
+                ) : (
+                  <div
+                    className={`${caseFrameClass} cursor-default`}
+                    style={caseFrameStyle}
+                  >
+                    {cover}
                   </div>
+                )}
+                <div className="flex flex-col items-center text-center">
+                  <span className={`${textClass} font-medium`}>{c.title}</span>
+                  <span className="text-[14px] leading-[20px] tracking-normal font-normal text-zinc-400">
+                    {c.dates} • {c.year}
+                    {c.soon ? " • Soon" : ""}
+                  </span>
                 </div>
-              )}
+              </div>
+            );
+          })}
+
+          <div
+            className="stagger-item flex flex-col items-center gap-2"
+            style={staggerStyle(8)}
+          >
+            <div
+              className={`${caseFrameClass} cursor-default`}
+              style={caseFrameStyle}
+            >
+              <PayButton />
             </div>
-          ))}
+            <span className="text-[14px] leading-[20px] tracking-normal text-zinc-400">
+              Interactive button
+            </span>
+          </div>
         </section>
       </div>
     </div>

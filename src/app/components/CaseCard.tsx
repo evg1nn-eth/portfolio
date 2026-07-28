@@ -1,10 +1,12 @@
 import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
 
 export type CaseStudy = {
   title: string;
   dates: string;
   image: StaticImageData;
   aspectRatio: string;
+  href?: string;
   clickable?: boolean;
 };
 
@@ -45,12 +47,12 @@ export default function CaseCard({ project }: { project: CaseStudy }) {
   }
 
   return (
-    <a
-      href="#"
+    <Link
+      href={project.href ?? "#"}
       className={className}
       style={{ aspectRatio: project.aspectRatio }}
     >
       {inner}
-    </a>
+    </Link>
   );
 }
