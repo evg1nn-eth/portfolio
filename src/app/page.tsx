@@ -1,113 +1,153 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import PayButton from "./components/PayButton";
-import ghostVpnImage from "./images/ghost-vpn.png";
-import personalFinanceTrackerImage from "./images/personal-finance-tracker.png";
+import avatar from "./images/projects/avatar.jpg";
+import ghostVpnIcon from "./images/projects/ghost-vpn-icon.svg";
+import kringgaIcon from "./images/projects/kringga-icon.svg";
+import newPeopleIcon from "./images/projects/newpeople-icon.svg";
+import pftIcon from "./images/projects/pft-icon.svg";
+import playgroundIcon from "./images/projects/playground-icon.svg";
 
-type CaseRow = {
+type Project = {
   title: string;
-  dates: string;
-  year: string;
-  soon?: boolean;
-  image: StaticImageData;
+  subtitle: string;
+  icon: StaticImageData;
   href?: string;
 };
 
-const cases: CaseRow[] = [
+type ExperienceItem = {
+  title: string;
+  role: string;
+  dates: string;
+  icon: StaticImageData;
+};
+
+const experience: ExperienceItem[] = [
   {
-    title: "Ghost VPN",
-    dates: "Telegram Mini App",
-    year: "2026",
-    soon: true,
-    image: ghostVpnImage,
+    title: "New People",
+    role: "Designer",
+    dates: "Aug 2026 - Current",
+    icon: newPeopleIcon,
   },
   {
-    title: "Personal Finance Tracker",
-    dates: "Concept",
-    year: "2025",
-    image: personalFinanceTrackerImage,
-    href: "/personal-finance-tracker",
+    title: "Digital Agency Kringga",
+    role: "UI/UX Designer",
+    dates: "Apr 2026 - Aug 2026",
+    icon: kringgaIcon,
   },
 ];
 
-const textClass =
-  "text-[14px] leading-[20px] tracking-normal text-[#111111] dark:text-zinc-100";
+const projects: Project[] = [
+  { title: "Ghost VPN", subtitle: "Telegram Mini App", icon: ghostVpnIcon },
+  {
+    title: "Personal Finance Tracker",
+    subtitle: "Concept",
+    icon: pftIcon,
+  },
+  { title: "Playground", subtitle: "UI experiments", icon: playgroundIcon },
+];
 
-const linkUnderline =
-  "relative inline before:absolute before:inset-x-0 before:bottom-0 before:h-px before:rounded-sm before:bg-[#d9d9d9] before:transition-colors before:duration-200 hover:before:bg-[#666] dark:before:bg-zinc-600 dark:hover:before:bg-zinc-300";
+const font = "font-['iA_Writer_Quattro']";
+const bodyText = `${font} text-[16px] leading-[20px] text-[#7f7a75]`;
+const link = "text-[#1a5a8d]";
 
-const caseFrameClass =
-  "relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-100 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none pointer-fine:hover:scale-[0.97] dark:bg-zinc-900";
+function ProjectRow({ project }: { project: Project }) {
+  const inner = (
+    <>
+      <Image src={project.icon} alt="" width={24} height={24} />
+      <span className={`${font} text-[16px] leading-[24px] text-white`}>
+        {project.title}
+      </span>
+      <span
+        className={`${font} text-[16px] leading-[20px] text-[#7f7a75]`}
+      >
+        {project.subtitle}
+      </span>
+    </>
+  );
 
-const caseFrameStyle = { height: "300px" };
+  if (project.href) {
+    return (
+      <Link href={project.href} className="flex items-center gap-4">
+        {inner}
+      </Link>
+    );
+  }
 
-function staggerStyle(i: number) {
-  return { "--stagger-i": i } as React.CSSProperties;
+  return <div className="flex items-center gap-4">{inner}</div>;
+}
+
+function ExperienceRow({ item }: { item: ExperienceItem }) {
+  return (
+    <div className="flex w-full items-center justify-between">
+      <div className="flex items-center gap-3">
+        <Image src={item.icon} alt="" width={24} height={24} />
+        <span className={`${font} text-[16px] leading-[24px] text-white`}>
+          {item.title}
+        </span>
+        <span className={`${font} text-[16px] leading-[24px] text-[#7f7a75]`}>
+          {item.role}
+        </span>
+      </div>
+      <span className={`${font} text-[16px] leading-[20px] text-[#7f7a75]`}>
+        {item.dates}
+      </span>
+    </div>
+  );
 }
 
 export default function Home() {
   return (
-    <div className="flex-1 bg-[#FDFDFC] transition-colors duration-300 dark:bg-[#0a0a0a]">
-      <div className="mx-auto max-w-[582px] px-4 pt-16 pb-24">
-        <header className="flex flex-col items-start text-left">
-          <div className="stagger-item flex flex-col" style={staggerStyle(0)}>
-            <h1 className={`${textClass} font-medium`}>Evgeny Merzalov</h1>
-            <span className="text-[14px] leading-[20px] tracking-normal text-zinc-400">
-              Updated Jul 27, 2026
-            </span>
+    <div className="min-h-screen bg-[#191919]">
+      <div className="mx-auto flex max-w-[700px] flex-col gap-12 px-4 py-24">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
+            <Image
+              src={avatar}
+              alt="Evgeny Merzalov"
+              width={124}
+              height={124}
+              quality={100}
+              className="h-[124px] w-[124px] rounded-[8px] object-cover"
+            />
+            <h1 className={`${font} text-[40px] leading-[48px] font-bold text-white`}>
+              Evgeny Merzalov
+            </h1>
           </div>
 
-          <div className="mt-6 flex flex-col gap-4">
-            <p
-              className={`${textClass} stagger-item font-normal`}
-              style={staggerStyle(1)}
-            >
-              I&apos;m Evgeny, an interface designer.
-            </p>
-            <p
-              className={`${textClass} stagger-item font-normal`}
-              style={staggerStyle(2)}
-            >
+          <div className="flex flex-col gap-4">
+            <p className={bodyText}>Hi there!</p>
+            <p className={bodyText}>
               Before design, I spent most of my life playing football
               professionally. When that chapter ended, I went all in on
               design.
             </p>
-            <p
-              className={`${textClass} stagger-item font-normal`}
-              style={staggerStyle(3)}
-            >
+            <p className={bodyText}>
               I currently work at the{" "}
               <a
                 href="https://kringga.agency/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={linkUnderline}
+                className={link}
               >
                 Digital Agency Kringga
               </a>
-              , focused on mobile and product design. My last project was
-              a Telegram Mini App, where I designed onboarding flows for
-              every platform and built a referral program from scratch.
+              , focused on mobile and product design. My last project was a
+              Telegram Mini App, where I designed onboarding flows for every
+              platform and built a referral program from scratch.
             </p>
-            <p
-              className={`${textClass} stagger-item font-normal`}
-              style={staggerStyle(4)}
-            >
+            <p className={bodyText}>
               On the side, I&apos;m exploring design engineering, learning
               how to take designs from Figma straight into working code.
               Lately I&apos;ve also been getting into typography and
               lettering.
             </p>
-            <p
-              className={`${textClass} stagger-item font-normal`}
-              style={staggerStyle(5)}
-            >
+            <p className={bodyText}>
               You can find me on{" "}
               <a
                 href="https://t.me/evg1nn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={linkUnderline}
+                className={link}
               >
                 Telegram
               </a>{" "}
@@ -116,7 +156,7 @@ export default function Home() {
                 href="https://www.linkedin.com/in/evgeny-merzalov-4923403b8/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={linkUnderline}
+                className={link}
               >
                 LinkedIn
               </a>
@@ -125,82 +165,63 @@ export default function Home() {
                 href="https://drive.google.com/file/d/1UKT7WVxkx7lI7VfSlhsgCyqRDuPtMbV9/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={linkUnderline}
+                className={link}
               >
                 CV
               </a>
               , or reach me via{" "}
-              <a
-                href="mailto:evgeny1merzalov@yandex.ru"
-                className={linkUnderline}
-              >
+              <a href="mailto:evgeny1merzalov@yandex.ru" className={link}>
                 email
               </a>
               .
             </p>
           </div>
-        </header>
+        </div>
 
-        <section className="mt-12 flex flex-col gap-[36px]">
-          {cases.map((c, i) => {
-            const cover = (
-              <Image
-                src={c.image}
-                alt={c.title}
-                sizes="550px"
-                quality={100}
-                className="h-full w-full object-cover"
-              />
-            );
-
-            return (
-              <div
-                key={c.title}
-                className="stagger-item flex flex-col items-center gap-2"
-                style={staggerStyle(6 + i)}
-              >
-                {c.href ? (
-                  <Link
-                    href={c.href}
-                    className={caseFrameClass}
-                    style={caseFrameStyle}
-                  >
-                    {cover}
-                  </Link>
-                ) : (
-                  <div
-                    className={`${caseFrameClass} cursor-default`}
-                    style={caseFrameStyle}
-                  >
-                    {cover}
-                  </div>
-                )}
-                <div className="flex flex-col items-center text-center">
-                  <span className={`${textClass} font-medium`}>{c.title}</span>
-                  <span className="text-[14px] leading-[20px] tracking-normal font-normal text-zinc-400">
-                    {c.dates} • {c.year}
-                    {c.soon ? " • Soon" : ""}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-
-          <div
-            className="stagger-item flex flex-col items-center gap-2"
-            style={staggerStyle(8)}
-          >
-            <div
-              className={`${caseFrameClass} cursor-default`}
-              style={caseFrameStyle}
-            >
-              <PayButton />
-            </div>
-            <span className="text-[14px] leading-[20px] tracking-normal text-zinc-400">
-              Interactive button
-            </span>
+        <div className="flex flex-col gap-4">
+          <p className={`${font} text-[20px] leading-[26px] font-bold text-white`}>
+            Projects
+          </p>
+          <div className="flex flex-col gap-3">
+            {projects.map((project) => (
+              <ProjectRow key={project.title} project={project} />
+            ))}
           </div>
-        </section>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <p className={`${font} text-[20px] leading-[26px] font-bold text-white`}>
+            Design Approach
+          </p>
+          <p className={bodyText}>
+            I believe good design starts with understanding the problem and
+            ends with attention to detail. I lean toward thinking about the
+            whole product, not just the interface.
+          </p>
+          <p className={bodyText}>
+            I try to make decisions deliberately and be able to explain
+            them, not just &quot;it looks better this way.&quot; It matters
+            to me to understand why each element is where it is and how it
+            affects the person using it.
+          </p>
+          <p className={bodyText}>
+            Lately I&apos;ve been drawn to staying closer to engineering,
+            understanding how what I design actually gets built, and where
+            design ends and engineering begins. I think that&apos;s where
+            the profession is heading, and I want to grow there.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <p className={`${font} text-[20px] leading-[26px] font-bold text-white`}>
+            Experience
+          </p>
+          <div className="flex flex-col gap-4">
+            {experience.map((item) => (
+              <ExperienceRow key={item.title} item={item} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

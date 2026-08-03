@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import AnimatedThemeToggler from "./components/AnimatedThemeToggler";
+import "@fontsource/ia-writer-quattro/400.css";
+import "@fontsource/ia-writer-quattro/700.css";
 import "./globals.css";
-
-const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})()`;
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Evgeny Merzalov — Interface Designer",
@@ -22,20 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} h-full scroll-smooth antialiased`}
-      suppressHydrationWarning
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
-      <body className="min-h-full flex flex-col">
-        <div className="fixed top-4 right-4 z-50">
-          <AnimatedThemeToggler />
-        </div>
-        {children}
-      </body>
+    <html lang="en" className="dark h-full scroll-smooth antialiased">
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
