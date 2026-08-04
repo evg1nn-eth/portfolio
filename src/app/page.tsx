@@ -31,7 +31,7 @@ const experience: ExperienceItem[] = [
   {
     title: "Digital Agency Kringga",
     role: "UI/UX Designer",
-    dates: "Apr 2026 - Aug 2026",
+    dates: "Mar 2026 - Aug 2026",
     icon: kringgaIcon,
   },
 ];
