@@ -222,11 +222,24 @@ back toward ~2400px wide before import would lose nothing visible at the
 
 - `public/cv.pdf` still not added locally — CV link points straight to a
   Google Drive URL instead, so this isn't currently broken.
-- Case cover images: empty by design, waiting on real screenshots.
-- Not yet re-pushed to GitHub after the 2026-08-11 rebuild.
-- Git commit author email is an auto-generated `.local` placeholder;
-  user hasn't decided whether to fix it (carried over note, unverified
-  whether still true post-rebuild).
+- `README.md` is gone (deleted in the 2026-08-11 wipe) and was never
+  recreated during the rebuild — didn't restore it since nobody asked,
+  but worth flagging since the repo is public.
+- Git commit author email is still an auto-generated `.local` placeholder
+  (`evgenymerzalov@MacBook-Air-Evgeny.local`) — confirmed still the case
+  on the 2026-08-11 rebuild commit, git printed its usual warning. User
+  still hasn't said whether to fix it.
+- **Pushed to GitHub 2026-08-11** (commit `28870b1`, "Rebuild portfolio in
+  jakub.kr-inspired light theme") — `main` is up to date with `origin/main`.
+- `avatar.jpg` was deleted from disk that same cleanup pass (genuinely
+  unused — the header photo was removed earlier and never asked back).
+  Still recoverable from git history before `28870b1` if the photo header
+  ever comes back.
+- `playground.svg` was **kept** despite being unused right now — the
+  Playground card was taken off the homepage with "уберем пока" (remove
+  *for now*), a stated-temporary removal, not a "this is unused, delete
+  it" situation. Don't delete this one in a future cleanup pass without
+  checking first; it's different from the avatar case above.
 
 ## Working-style notes
 
