@@ -38,8 +38,7 @@ export default function GhostVpn() {
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
         <p className="font-serif-accent max-w-[43.25rem] text-center text-[#6f6f6f] leading-relaxed">
           This case is under NDA, and part of the product hasn&apos;t shipped
-          yet — so there are no screens or detailed flows here, just the
-          task, my role, and the approach.
+          yet.
         </p>
       </div>
     </div>
