@@ -1,21 +1,37 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  --background: #191919;
-  --foreground: #ffffff;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "iA Writer Quattro";
+  --background: #fcfcfc;
+  --foreground: #202020;
+  --muted: #6f6f6f;
+  --border: #e8e8e8;
+  --border-hover: #e0e0e0;
+  --underline: #d9d9d9;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "iA Writer Quattro", ui-sans-serif, system-ui, sans-serif;
-  font-weight: 400;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "cv01";
+}
+
+.font-serif-accent {
+  font-family: var(--font-libre-baskerville), Georgia, serif;
+  font-style: italic;
+}
+
+.card-shadow {
+  box-shadow:
+    0px 0px 0px 1px #0000000f,
+    0px 1px 2px -1px #0000000f,
+    0px 2px 4px 0px #0000000a;
+  transition: box-shadow 200ms ease-out;
+}
+
+.card-shadow:hover {
+  box-shadow:
+    0px 0px 0px 1px #00000014,
+    0px 1px 2px -1px #00000014,
+    0px 2px 4px 0px #0000000f;
 }
