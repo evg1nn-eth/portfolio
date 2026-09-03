@@ -285,6 +285,14 @@ irreversibility of a full rebuild):
   wasn't asked for and doesn't match this project's row-based Контакты
   layout from Figma.
 
+**Labels swapped 2026-09-03, later same day** — the two section labels
+above were backwards from what the user actually wanted: it's now
+**"Проекты"** for the single Ghost VPN row and **"Работы"** for the
+three-item list (Personal Finance Tracker etc.). Everything else in the
+two bullets above — behavior, tooltip, links, hover — is unchanged, only
+the label text moved. If reading the bullets above, mentally swap the
+label name.
+
 New components: `src/app/components/WorkTooltip.tsx` (the hover-tip
 pill, portaled to `document.body` via `createPortal` — required, not
 optional: the reveal animation puts a non-`none` `transform` on its
@@ -504,12 +512,10 @@ eyeballing the full frame.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`,
-  `392e681`), `/personal-finance-tracker` rebuild (`92370a1`), and the
-  lightbox + header-button-removal follow-up (`fac3c2e`), and the
-  lightbox image-quality fix (`b033117`, "Fix blurry lightbox images on
-  the case page") are all pushed. `main` is up to date with
-  `origin/main`.
+- **Pushed to GitHub 2026-09-03** — every rebuild session that day
+  (homepage, `/personal-finance-tracker`, the lightbox, its quality fix,
+  and the Работы/Проекты label swap) is pushed through commit `02e9e0a`.
+  `main` is up to date with `origin/main`.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
