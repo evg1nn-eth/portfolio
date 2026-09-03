@@ -9,9 +9,9 @@ job market. Two English case-study pages (`/ghost-vpn`,
 deliberately left untouched in the 2026-09-03 rebuild — see below.
 
 Dev server: `npm run dev` (Turbopack), localhost:3000.
-Repo: https://github.com/evg1nn-eth/portfolio (public) — not re-pushed
-since the 2026-08-11 rebuild; the 2026-09-03 rebuild below is also
-uncommitted as of this writing.
+Repo: https://github.com/evg1nn-eth/portfolio (public, pushed) —
+`main` is up to date with `origin/main` as of the 2026-09-03 rebuild
+below (commit `7726494`).
 
 **Always verify visual changes with a headless Chrome screenshot before
 claiming something is fixed** — this user has caught several wrong/stale
@@ -343,10 +343,9 @@ overflow warning below — `scrollWidth === clientWidth` confirmed at both
 
 ## Known open items
 
-- The 2026-09-03 Russian resume-style rebuild (see above) is **uncommitted**
-  as of this writing — working tree has the new/changed homepage files
-  staged in disk but no commit made, since committing wasn't requested
-  this session. Ask before assuming it should be committed/pushed.
+- **Pushed to GitHub 2026-09-03** (commit `7726494`, "Rebuild homepage as
+  Russian resume-style layout from Figma") — `main` is up to date with
+  `origin/main`.
 - `public/cv.pdf` still not added locally — CV link points straight to a
   Google Drive URL instead, so this isn't currently broken.
 - `README.md` is gone (deleted in the 2026-08-11 wipe) and was never
