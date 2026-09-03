@@ -63,7 +63,7 @@ export default function Home() {
           </div>
 
           <div className="flex w-full flex-col gap-4 border-b border-[#f5f5f5] pb-6">
-            <p className="text-[#999]">Работы</p>
+            <p className="text-[#999]">Проекты</p>
             <div className="flex w-full items-center justify-between whitespace-nowrap">
               <span className="text-[#5c5c5c]">Ghost VPN</span>
               <WorkTooltip
@@ -75,7 +75,7 @@ export default function Home() {
           </div>
 
           <div className="flex w-full flex-col gap-4 border-b border-[#f5f5f5] pb-6">
-            <p className="text-[#999]">Проекты</p>
+            <p className="text-[#999]">Работы</p>
             <div className="rows">
               {projects.map((project) => (
                 <ProjectRow key={project.name} {...project} />
