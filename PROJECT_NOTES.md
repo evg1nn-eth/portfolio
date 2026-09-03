@@ -587,6 +587,18 @@ empty, ~784px with 4 subscriptions selected, plus 64px top/bottom padding
 who selects most/all of a category may need to scroll within the frame —
 accepted trade-off rather than an enormous mostly-empty default frame).
 
+**Micro-tweaks same day, right after**: dropped `.page`'s `background:
+#f5f5f5` in the copied `public/demos/crypto-swap/style.css` (only the
+copy — the original `/Users/evgenymerzalov/Desktop/Main/aero-swap`
+project was left untouched, per the same rule as everywhere else in this
+entry) so the swap card sits directly on the site's white background
+instead of showing a separate gray panel; forced a `<br />` in the Crypto
+Swap description so it wraps at the exact word the user specified
+(natural reflow broke one word later than wanted); dropped "стриминги"
+from the Subscription Tracker description (both the visible paragraph
+and its `metadata.description`) per the user's updated reference
+screenshot.
+
 Verified no horizontal overflow at 390px mobile width on all three
 touched pages (home, `/crypto-swap`, `/subscription-tracker`), zero
 console/page errors, full production build clean across all 7 routes.
@@ -615,11 +627,13 @@ console/page errors, full production build clean across all 7 routes.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03 through commit `105006d`** ("Add
-  interactive Crypto Swap and Subscription Tracker case pages") — this
-  covers the whole day: homepage, `/personal-finance-tracker`, the
-  lightbox and its quality fix, the Проекты/Работы label swap, and the
-  Crypto Swap / Subscription Tracker embeds. `main` is up to date with
+- **Pushed to GitHub 2026-09-03 through commit `fb037e2`** ("Micro-tweak
+  Crypto Swap and Subscription Tracker case pages") — this covers the
+  whole day: homepage, `/personal-finance-tracker`, the lightbox and its
+  quality fix, the Проекты/Работы label swap, the Crypto Swap /
+  Subscription Tracker embeds, and their same-day micro-tweaks (dropped
+  demo background, forced line break, description text edit). `main` is
+  up to date with
   `origin/main`.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
