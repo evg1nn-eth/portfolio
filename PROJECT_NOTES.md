@@ -416,12 +416,10 @@ visually diffed against the Figma frame before calling it done.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03** (commit `7726494`, "Rebuild homepage as
-  Russian resume-style layout from Figma", plus `392e681` noting it) —
-  `main` was up to date with `origin/main` as of the homepage rebuild.
-  The same-day `/personal-finance-tracker` rebuild (see above) is a
-  separate, later, **uncommitted** change as of this writing — ask before
-  assuming it should be committed/pushed too.
+- **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`, plus
+  `392e681` noting it) and the same-day `/personal-finance-tracker`
+  rebuild (`92370a1`, "Rebuild Personal Finance Tracker case page from
+  Figma") are both pushed. `main` is up to date with `origin/main`.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
