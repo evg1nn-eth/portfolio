@@ -92,7 +92,6 @@ function LightboxOverlay({
   const prevBtnRef = useRef<HTMLButtonElement>(null);
   const nextBtnRef = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
-  const [imgSrc, setImgSrc] = useState("");
   const [fade, setFade] = useState(false);
   const openedIndexRef = useRef<number | null>(null);
   const reduceRef = useRef(false);
@@ -130,8 +129,6 @@ function LightboxOverlay({
     const isNav = openedIndexRef.current !== null;
     openedIndexRef.current = index;
 
-    const sourceImg = source.querySelector("img");
-    setImgSrc(sourceImg?.currentSrc || sourceImg?.src || "");
     setFade(isNav);
 
     const r = source.getBoundingClientRect();
@@ -231,15 +228,15 @@ function LightboxOverlay({
         </button>
       )}
       <div ref={itemRef} className="lb-item">
-        {imgSrc && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={imgSrc}
-            src={imgSrc}
-            alt={img.alt}
-            className={fade ? "lb-img lb-img-fade" : "lb-img"}
-          />
-        )}
+        <Image
+          key={index}
+          src={img.src}
+          alt={img.alt}
+          fill
+          sizes="70vw"
+          quality={100}
+          className={fade ? "lb-img lb-img-fade" : "lb-img"}
+        />
       </div>
       {images.length > 1 && (
         <button

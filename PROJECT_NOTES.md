@@ -448,6 +448,38 @@ Verified via Puppeteer: open/close/next, image `src` and `.lb-item` rect
 at each step, Escape and backdrop-click both close, header buttons
 confirmed absent, zero console errors, no mobile overflow at 390px.
 
+### Lightbox image quality fixed same day — two separate bugs, not one
+
+User reported the enlarged lightbox photo looked "мыльное" (soft/
+blurry) and pointed out the Figma file has these same five screens laid
+out again, larger, further down the canvas — check there first before
+assuming the fix is code-only.
+
+They were right: five top-level frames sit directly below the
+`Personal Finance Tracker` frame on the canvas, each 1920×1080 (vs the
+480×270-point card groups embedded in the case page) — `94:8824`
+(shares the literal name `Frame 2131329513` with the embedded hero
+group, confirming it's the same source scaled up), `93:7926`,
+`93:8042`, `93:8140`, `93:8198`. Matched each to onboarding/home-flow/
+stats/settings/ui-kit by screenshotting and comparing content (the
+names don't correspond 1:1, had to eyeball it) — same `ui-kit` overflow
+noted earlier is visible here too, confirming again it's a genuine
+Figma-source imperfection, not an export artifact. Re-exported all five
+via `download_assets` at `defaultScale: 2` (3840×2160 each, ~1.8MB
+total) over the old 1440×810 files.
+
+**That alone would not have fixed it.** The actual bug was in
+`CaseGallery.tsx`: the lightbox cloned the *thumbnail's* `currentSrc` —
+next/image had already picked a small variant sized for the 480px-wide
+thumbnail slot (per its own `sizes="480px"`), so no matter how large the
+source file was, the lightbox was stuck re-displaying that same small
+variant stretched to ~70% of the viewport. Fixed by rendering a
+*separate* `next/image` (`fill`, `sizes="70vw"`, `quality={100}`) inside
+`.lb-item` sourced from the original `StaticImageData`, so Next
+generates and requests its own appropriately-large variant for the
+enlarged display size instead of reusing the thumbnail's. Confirmed
+pixel-level sharpness via a cropped Puppeteer screenshot, not just
+eyeballing the full frame.
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
@@ -474,9 +506,11 @@ confirmed absent, zero console errors, no mobile overflow at 390px.
 
 - **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`,
   `392e681`), `/personal-finance-tracker` rebuild (`92370a1`), and the
-  lightbox + header-button-removal follow-up (`fac3c2e`, "Add image
-  lightbox to case page, drop header nav buttons") are all pushed.
-  `main` is up to date with `origin/main`.
+  lightbox + header-button-removal follow-up (`fac3c2e`) are pushed.
+  The same-day lightbox image-quality fix (see above — high-res Figma
+  re-export + the `fill`/`sizes` next/image fix) is a separate, later,
+  **uncommitted** change as of this writing — ask before assuming it
+  should be committed/pushed.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
