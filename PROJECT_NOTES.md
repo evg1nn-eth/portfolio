@@ -377,20 +377,76 @@ arithmetic — `80ms + (n-1)×30ms` — just carried one page's worth further,
 not a new formula) since this page has 9 top-level content blocks vs the
 homepage's 4.
 
-Kept two things from the *old* case page that aren't in the Figma
-mockup at all (the Figma frame is content-only, no header chrome): the
-circular back-to-home button, and the "open in Figma" button (now
-pointing at this same file/node, `82:7881`, not the old unrelated Figma
-file the previous version linked to). Both recolored to the new token
-set. This mirrors the exact same judgment call already made and noted for
-this page during the 2026-08-11 rebuild — established precedent on this
-specific page, not a fresh invention.
+Initially kept two things from the *old* case page that aren't in the
+Figma mockup at all (the Figma frame is content-only, no header chrome):
+a circular back-to-home button and an "open in Figma" button, both
+recolored to the new token set. **Removed again same day, per explicit
+request** — see the lightbox entry right below; turns out dom.fyi's own
+`case.html` has no back-navigation chrome either (checked directly), so
+removing it isn't a deviation from the reference, it's actually a closer
+match to it.
 
 Verified the same way as the homepage: Puppeteer against the real dev
 server (`puppeteer-core` via `npm install --no-save`, uninstalled after),
 `scrollWidth === clientWidth` at 390px/320px, zero console/page errors,
 back-button navigation, and the Figma-link `href`. Screenshotted and
 visually diffed against the Figma frame before calling it done.
+
+### Image lightbox added same day, header buttons removed
+
+User asked to drop the back/Figma header buttons and add dom.fyi's
+"open a photo and view it" interaction on this page's images. dom.fyi's
+homepage links each Work row to its own `case.html?p=<name>`, a page not
+previously looked at — fetched it directly (`curl`) to read its actual
+lightbox implementation rather than guessing from the homepage's modal
+(which the user had explicitly rejected during the homepage build, and
+is a different feature anyway — that one's a click-to-open project
+*card*; this is click-to-*expand-the-image-itself*).
+
+`case.html`'s lightbox is a FLIP animation: on click, clone the clicked
+image into a `position:fixed` element starting at the thumbnail's exact
+`getBoundingClientRect()`, then on the next frame animate `top/left/
+width/height` to a centered rect scaled to fit 67.5% of the viewport —
+CSS `transition`, not a canned library. Frosted-white backdrop
+(`rgba(255,255,255,.6)` + `backdrop-filter: blur(28px)`), prev/next
+buttons that reposition to flank the image (`left ± (image edge + 32px
+gap)`, clamped to an 8px screen margin) and crossfade the image on
+navigation, Escape/backdrop-click to close (closing re-runs the same FLIP
+in reverse, back down to the source thumbnail's current rect — not just
+a fade), arrow keys to navigate while open, and a `prefers-reduced-
+motion` fallback that skips straight to the end state. Ported all of it
+faithfully — timings, easing (`cubic-bezier(0.22,1,0.36,1)`), the 32px/
+8px nav-button math, the 67.5% viewport cap — all as literal values from
+the reference, not re-derived.
+
+**Did not** port dom.fyi's wider two-column `case.html` page shell
+(480px text / 840px gallery, object-fit: cover on a fixed 520px row
+height) — that's a different, wider layout than this page's actual
+content, which is Figma-sourced at a flat 480px throughout (see above).
+Only the *lightbox interaction* was in scope; the surrounding page layout
+stays exactly as the Figma frame specified it, unchanged. Also skipped
+the border-radius bump the reference uses on its expanded image (8px
+there) — kept it at this page's own 4px throughout, source and expanded,
+since a FLIP that changes corner radius mid-flight looks like a glitch
+and 4px is already this page's established radius from Figma, not a
+number worth deviating from just to match the reference more literally
+on a detail this project doesn't otherwise use.
+
+New component: `src/app/components/CaseGallery.tsx` — `CaseGallery`
+(client component, holds open/closed + current-index state via React
+context, portals the lightbox overlay to `document.body`) and
+`GalleryImage` (the clickable thumbnail, registers its own DOM ref for
+the FLIP source rect). Split this way — rather than one flat array
+render — because the five images aren't contiguous in the page (the
+hero sits before the three text sections, the other four after), but
+still need to share one prev/next index so navigating from the hero
+image cycles into the trailing four, matching how dom.fyi's own
+`document.querySelectorAll('.work-gallery .shot')` spans the whole page
+regardless of what's between the shots.
+
+Verified via Puppeteer: open/close/next, image `src` and `.lb-item` rect
+at each step, Escape and backdrop-click both close, header buttons
+confirmed absent, zero console errors, no mobile overflow at 390px.
 
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
@@ -417,9 +473,10 @@ visually diffed against the Figma frame before calling it done.
 ## Known open items
 
 - **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`, plus
-  `392e681` noting it) and the same-day `/personal-finance-tracker`
-  rebuild (`92370a1`, "Rebuild Personal Finance Tracker case page from
-  Figma") are both pushed. `main` is up to date with `origin/main`.
+  `392e681` noting it) and the `/personal-finance-tracker` rebuild
+  (`92370a1`) are pushed. The same-day lightbox + header-button-removal
+  follow-up (see above) is a separate, later, **uncommitted** change as
+  of this writing — ask before assuming it should be committed/pushed.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),

@@ -325,4 +325,111 @@ a {
   .icon.copied .ic-check path {
     transition: none;
   }
+  .lb-item {
+    transition: none;
+  }
+}
+
+/* Image lightbox: click a case-page image to expand it (FLIP), frosted backdrop, Esc to close */
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+.lb.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+.lb-item {
+  position: fixed;
+  border-radius: 4px;
+  background: #f5f5f5;
+  overflow: hidden;
+  cursor: zoom-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  transition:
+    top 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.44s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.lb-img-fade {
+  animation: lbFadeIn 280ms ease both;
+}
+@keyframes lbFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.lb-nav {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 2;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #f5f5f5;
+  color: #5c5c5c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition:
+    left 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease;
+}
+.lb-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ececec;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lb-nav:hover::before {
+  transform: scale(1);
+}
+.lb-nav:hover {
+  color: #202020;
+}
+.lb-nav svg {
+  position: relative;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+.lb-prev svg {
+  transform: scaleX(-1);
 }
