@@ -14,8 +14,12 @@ const projects: ProjectItem[] = [
     role: "Концепт",
     href: "/personal-finance-tracker",
   },
-  { name: "Artist Subscription", role: "Исследование" },
-  { name: "Subscription Tracker", role: "Вайб-код" },
+  { name: "Crypto Swap", role: "Вайб-код", href: "/crypto-swap" },
+  {
+    name: "Subscription Tracker",
+    role: "Вайб-код",
+    href: "/subscription-tracker",
+  },
 ];
 
 const EMAIL = "evgeny1merzalov@yandex.ru";

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aero — Swap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<script src="script.js" defer></script>
+</head>
+<body>
+<main class="page">
+  <div class="swap-card" data-node-id="1037:10207">
+
+    <div class="swap-view" data-role="swap-view">
+
+      <div class="swap-card__top">
+
+        <div class="swap-card__header">
+          <div class="tabs">
+            <button type="button" class="tab tab--active">Swap</button>
+            <button type="button" class="tab">Gas</button>
+          </div>
+          <button type="button" class="icon-button" aria-label="Настройки">
+            <img src="assets/icon-settings.svg" width="24" height="24" alt="" />
+          </button>
+        </div>
+
+        <div class="swap-card__fields">
+
+          <div class="field" data-side="sell">
+            <div class="field__top">
+              <span class="field__label">Sell</span>
+              <div class="quick-amounts">
+                <button type="button" class="quick-amount" data-percent="0.25">25%</button>
+                <button type="button" class="quick-amount" data-percent="0.5">50%</button>
+                <button type="button" class="quick-amount" data-percent="1">Max</button>
+              </div>
+            </div>
+            <div class="field__amount-line">
+              <input
+                class="field__amount"
+                data-role="sell-input"
+                type="text"
+                inputmode="decimal"
+                placeholder="0"
+                autocomplete="off"
+              />
+              <button type="button" class="token-selector" data-role="sell-token-button">
+                <span class="token-icon">
+                  <img class="token-icon__base" data-role="sell-token-icon" src="" width="20" height="20" alt="" />
+                  <img class="token-icon__badge" data-role="network-badge" src="" width="6" height="6" alt="" />
+                </span>
+                <span class="token-selector__symbol" data-role="sell-token-symbol"></span>
+                <img class="token-selector__chevron" src="assets/icon-chevron-down.svg" width="20" height="20" alt="" />
+              </button>
+            </div>
+            <div class="field__sub-line">
+              <span class="field__usd" data-role="sell-usd">$0</span>
+              <span class="field__rate" data-role="sell-balance">0</span>
+            </div>
+          </div>
+
+          <div class="field" data-side="buy">
+            <div class="field__top">
+              <span class="field__label">Buy</span>
+            </div>
+            <div class="field__amount-line">
+              <span class="field__amount" data-role="buy-output">0</span>
+              <button type="button" class="token-selector" data-role="buy-token-button">
+                <span class="token-icon">
+                  <img class="token-icon__base" data-role="buy-token-icon" src="" width="20" height="20" alt="" />
+                  <img class="token-icon__badge" data-role="network-badge" src="" width="6" height="6" alt="" />
+                </span>
+                <span class="token-selector__symbol" data-role="buy-token-symbol"></span>
+                <img class="token-selector__chevron" src="assets/icon-chevron-down.svg" width="20" height="20" alt="" />
+              </button>
+            </div>
+            <div class="field__sub-line">
+              <span class="field__usd" data-role="buy-usd">$0</span>
+              <span class="field__rate" data-role="buy-balance">0</span>
+            </div>
+          </div>
+
+          <button type="button" class="swap-arrow" aria-label="Поменять токены местами">
+            <img src="assets/icon-arrow-down.svg" width="24" height="24" alt="" />
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="swap-chart" data-role="swap-chart" hidden>
+        <p class="swap-chart__rate" data-role="swap-rate"></p>
+        <div class="swap-chart__fee">
+          <img src="assets/icon-gas.svg" width="20" height="20" alt="" />
+          <span>$0.12</span>
+        </div>
+      </div>
+
+      <button type="button" class="swap-card__submit" data-role="submit" disabled>Enter amount to swap</button>
+
+    </div>
+
+    <div class="select-view" data-role="select-view" hidden>
+
+      <div class="select-view__block">
+        <div class="select-view__header">
+          <p class="select-view__title">Select token</p>
+          <button type="button" class="icon-button" data-role="select-close" aria-label="Закрыть">
+            <img src="assets/icon-x.svg" width="24" height="24" alt="" />
+          </button>
+        </div>
+
+        <div class="select-view__search-row">
+          <div class="select-search">
+            <img src="assets/icon-search.svg" width="24" height="24" alt="" />
+            <input type="text" class="select-search__input" data-role="token-search" placeholder="Search tokens" autocomplete="off" />
+          </div>
+          <div class="network-select">
+            <button type="button" class="network-button" data-role="network-button">
+              <img data-role="network-icon" src="" width="24" height="24" alt="" />
+              <span data-role="network-label"></span>
+              <img src="assets/icon-chevron-small.svg" width="24" height="24" alt="" />
+            </button>
+            <div class="token-dropdown token-dropdown--networks" data-role="network-dropdown" hidden>
+              <p class="token-dropdown__caption">All networks</p>
+              <div data-role="network-dropdown-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="token-list" data-role="token-list"></div>
+
+    </div>
+
+    <div class="confirm-view" data-role="confirm-view" hidden>
+
+      <div class="confirm-view__top">
+        <div class="confirm-view__close-row">
+          <button type="button" class="icon-button" data-role="confirm-close" aria-label="Закрыть">
+            <img src="assets/icon-x.svg" width="20" height="20" alt="" />
+          </button>
+        </div>
+        <div class="confirm-view__status">
+          <img class="confirm-view__icon" data-role="confirm-icon" src="" width="40" height="40" alt="" />
+          <p class="confirm-view__title" data-role="confirm-title"></p>
+        </div>
+      </div>
+
+      <div class="confirm-steps">
+        <div class="confirm-step" data-role="confirm-step-1">
+          <span class="confirm-step__number">1.</span>
+          <span class="confirm-step__label">Sign message in wallet</span>
+          <img class="confirm-step__icon" data-role="confirm-step-1-icon" src="" width="20" height="20" alt="" />
+        </div>
+        <div class="confirm-step" data-role="confirm-step-2">
+          <span class="confirm-step__number">2.</span>
+          <span class="confirm-step__label">Confirm swap</span>
+          <img class="confirm-step__icon" data-role="confirm-step-2-icon" src="" width="20" height="20" alt="" />
+        </div>
+      </div>
+
+      <button type="button" class="swap-card__submit" data-role="confirm-action" disabled></button>
+
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

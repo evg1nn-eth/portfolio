@@ -3,16 +3,19 @@
 Personal portfolio site for Evgeny Merzalov — product designer, former
 professional footballer, based in Orel. Next.js (App Router) + Tailwind
 CSS v4 + TypeScript. Homepage, resume-row style (name/role, bio,
-Работы/Проекты/Контакты sections), Russian copy, targeting the Russian
-job market. `/personal-finance-tracker` was rebuilt the same way
-2026-09-03 (see below); `/ghost-vpn` is still the older English
-jakub.kr-styled page and is currently unlinked from the homepage (see the
-2026-09-03 homepage entry — the Работы row points nowhere on purpose).
+Проекты/Работы/Контакты sections — note the labels were swapped
+2026-09-03, see below), Russian copy, targeting the Russian job market.
+`/personal-finance-tracker`, `/crypto-swap`, and `/subscription-tracker`
+are all rebuilt to the new look (the latter two embed real standalone
+apps live via iframe — see the 2026-09-03 embed entry near the end of
+this file); `/ghost-vpn` is still the older English jakub.kr-styled page
+and is currently unlinked from the homepage on purpose.
 
 Dev server: `npm run dev` (Turbopack), localhost:3000.
 Repo: https://github.com/evg1nn-eth/portfolio (public, pushed) —
-`main` is up to date with `origin/main` as of the 2026-09-03 rebuild
-below (commit `7726494`).
+see "Known open items" at the end of this file for the exact commit
+`main` is caught up to; this file gets a stale push-status note
+corrected after every commit, so trust that section over this one.
 
 **Always verify visual changes with a headless Chrome screenshot before
 claiming something is fixed** — this user has caught several wrong/stale
@@ -270,15 +273,13 @@ irreversibility of a full rebuild):
   pattern as dom.fyi's Selah™ tooltip, just Russian copy. `/ghost-vpn`
   itself still exists on disk and still works if visited directly, it's
   just unlinked from the homepage now.
-- "Проекты" now lists **three** items, only one of which is real: Personal
-  Finance Tracker (→ `/personal-finance-tracker`, existing case page,
-  full hover interactivity + arrow), Artist Subscription and Subscription
-  Tracker (no case pages exist for either — not invented — rendered as
-  plain non-clickable rows that still participate in the sibling-dim
-  hover group, just without the arrow/cursor-pointer, own judgment call
-  not separately asked about since low-stakes/reversible). If real case
-  pages get built for these two later, just add `href` to their entries
-  in the `projects` array in `src/app/page.tsx`.
+- The list originally had **three** items, only one of which was real at
+  the time (Personal Finance Tracker); the other two (then "Artist
+  Subscription" and "Subscription Tracker") were placeholder rows with no
+  `href`. **Since superseded** — "Artist Subscription" became "Crypto
+  Swap" and both it and Subscription Tracker got real case pages the same
+  day; see the dedicated 2026-09-03 embed entry further down this file.
+  All three project rows are real/linked as of that entry.
 - A copy-to-clipboard icon (dom.fyi's copy⇄check morph SVG, sound
   removed) was added next to the Email row specifically, per explicit
   request — not the whole dom.fyi inline-paragraph contact block, which
@@ -488,6 +489,108 @@ generates and requests its own appropriately-large variant for the
 enlarged display size instead of reusing the thumbnail's. Confirmed
 pixel-level sharpness via a cropped Puppeteer screenshot, not just
 eyeballing the full frame.
+
+## 2026-09-03 (later) — Crypto Swap and Subscription Tracker embeds
+
+User replaced the placeholder "Artist Subscription / Исследование" row
+with **"Crypto Swap / Вайб-код"** (Personal Finance Tracker and
+Subscription Tracker unchanged), and asked for real, working, interactive
+case pages for both Crypto Swap and Subscription Tracker — not
+screenshots this time. Both apps already existed as separate, finished
+side projects the user had built in earlier sessions, sitting in sibling
+folders next to this repo: `/Users/evgenymerzalov/Desktop/Main/Tracker`
+(Subscription Tracker — Vite + React + TS + Tailwind + `motion`) and
+`/Users/evgenymerzalov/Desktop/Main/aero-swap` (Crypto Swap — plain
+static HTML/CSS/JS, a token-swap widget UI). Explicit instruction: don't
+invent anything new, just get the existing apps running inside the
+portfolio.
+
+**Approach: build each as a static bundle, embed via `<iframe>`, don't
+touch either source app's own code/config.** Neither app calls any
+external API (confirmed by grep — aero-swap simulates the exchange rate
+client-side, no `fetch`/`XHR` in either project beyond Tracker's own
+in-memory state), so nothing about them depends on being served from a
+particular origin — safe to iframe. Rewriting either into native
+Next.js/React components in this app was deliberately rejected: Tracker's
+own Tailwind classes and aero-swap's global CSS class names (`.field`,
+`.tab`, etc.) would collide with this project's own styles if inlined
+into the same DOM/page, and reimplementing either app's logic natively
+risks introducing subtle behavior differences — exactly what "don't
+invent, just port" was warning against. An iframe guarantees byte-for-
+byte the same DOM, CSS, and JS execution as the standalone app, with zero
+adaptation risk.
+
+Used a background `Workflow` (ultracode was on for the session) with two
+parallel agents — one per project, since they're independent tech stacks
+touching disjoint output directories, a clean fit for real parallelism
+rather than a barrier:
+- **aero-swap → `public/demos/crypto-swap/`**: no build step, copied
+  index.html/style.css/script.js/assets/ as-is (excluding `.claude/`,
+  `.agents/`, `skills-lock.json` — Claude Code project metadata, not part
+  of the running app). Agent verified every asset reference in the
+  markup/CSS/JS is a relative path (so it survives being served from a
+  subpath instead of a site root) and confirmed via `python3 -m
+  http.server` + `curl` that the copied files actually serve correctly.
+- **Tracker → `public/demos/subscription-tracker/`**: built with `npx
+  vite build --base=./` (relative base, required since this is served
+  from `/demos/subscription-tracker/`, not site root — Vite's default
+  `base: '/'` would have produced absolute asset paths that 404 under a
+  subpath) run directly from the *original* project folder — never
+  modified `vite.config.ts` or any other source file there, so the
+  standalone project still works exactly as before at its own localhost.
+  `dist/` output was then copied into the portfolio's `public/demos/`.
+  Typecheck (`tsc -b`, normally part of `npm run build`) was skipped in
+  favor of `vite build` alone — not needed to route around a failure,
+  `vite build` just doesn't require it and this is a straight port of
+  already-working code, not a place to introduce a new typecheck gate.
+
+Both verified end-to-end afterward (not just "it built"): actually typed
+an amount into the Crypto Swap sell field and confirmed the buy amount
+computed correctly and the submit button went from disabled/"Enter
+amount to swap" to enabled/"Swap"; opened its token-select view; clicked
+several service chips in Subscription Tracker and confirmed the running
+total and subscription list updated. All via Puppeteer driving the real
+iframe's `contentFrame()`, not just a static screenshot — this is
+JS-driven UI, a screenshot alone can't prove it's interactive.
+
+**Page layout**: title + description (styled like a lighter/muted label
+above darker body text — read directly off the two screenshots the user
+attached of the intended header, since there was no Figma source this
+time) then a divider then the iframe, reusing this project's established
+`#5c5c5c`/`#999`/`#f5f5f5` tokens and the `.content` reveal-animation
+class. **Deliberately different container widths per page** — Crypto
+Swap's demo fits its own natural `max-width: 433px` card comfortably
+inside this site's usual 480px column, so `/crypto-swap` stayed at the
+standard 480px throughout. Subscription Tracker's own layout is built for
+a 620px column (`max-w-[620px]` in its `App.tsx`) — forcing that into
+480px would have visibly cramped a grid of category chips for no reason,
+so `/subscription-tracker` uses a wider 700px outer container for the
+iframe specifically, while keeping its title/description text nested in
+its own 480px-wide block for reading-width consistency with the rest of
+the site. This is the same narrow-text/wide-media split dom.fyi itself
+uses (480px text column vs 840px image gallery, referenced repeatedly
+earlier in this file) — not a new pattern invented for this page.
+
+**Iframe heights were measured, not guessed.** Initial guesses (760px /
+1000px) left visibly excessive empty space — the embedded pages
+vertically center their content and don't report a useful `scrollHeight`
+from JS (both use `min-height: 100vh`, and Tracker's outer flex container
+stretches its child via default `align-items: stretch` in a row-direction
+parent, so naive height reads returned the viewport height right back).
+Had to measure the actual leaf-content bounding box span instead (min
+`top` to max `bottom` across every childless element on the page) to get
+real numbers: Crypto Swap's card is ~410px by default, ~490px with the
+token-select view open, plus the page's own 40px top/bottom padding →
+settled on **600px**. Subscription Tracker's content span is ~542px
+empty, ~784px with 4 subscriptions selected, plus 64px top/bottom padding
+→ settled on **900px** (comfortably fits a handful of selections; a user
+who selects most/all of a category may need to scroll within the frame —
+accepted trade-off rather than an enormous mostly-empty default frame).
+
+Verified no horizontal overflow at 390px mobile width on all three
+touched pages (home, `/crypto-swap`, `/subscription-tracker`), zero
+console/page errors, full production build clean across all 7 routes.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
@@ -512,10 +615,13 @@ eyeballing the full frame.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03** — every rebuild session that day
-  (homepage, `/personal-finance-tracker`, the lightbox, its quality fix,
-  and the Работы/Проекты label swap) is pushed through commit `02e9e0a`.
-  `main` is up to date with `origin/main`.
+- **Pushed to GitHub 2026-09-03 through commit `02e9e0a`** (homepage,
+  `/personal-finance-tracker`, the lightbox, its quality fix, the
+  Проекты/Работы label swap). The same-day Crypto Swap / Subscription
+  Tracker embed work (see above) is a separate, later, **uncommitted**
+  change as of this writing — including the new `public/demos/` static
+  bundles, which are sizeable (~1.1MB) and worth a deliberate `git add`,
+  not a blind `-A`. Ask before assuming it should be committed/pushed.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
