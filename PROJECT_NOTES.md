@@ -615,13 +615,12 @@ console/page errors, full production build clean across all 7 routes.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03 through commit `02e9e0a`** (homepage,
-  `/personal-finance-tracker`, the lightbox, its quality fix, the
-  Проекты/Работы label swap). The same-day Crypto Swap / Subscription
-  Tracker embed work (see above) is a separate, later, **uncommitted**
-  change as of this writing — including the new `public/demos/` static
-  bundles, which are sizeable (~1.1MB) and worth a deliberate `git add`,
-  not a blind `-A`. Ask before assuming it should be committed/pushed.
+- **Pushed to GitHub 2026-09-03 through commit `105006d`** ("Add
+  interactive Crypto Swap and Subscription Tracker case pages") — this
+  covers the whole day: homepage, `/personal-finance-tracker`, the
+  lightbox and its quality fix, the Проекты/Работы label swap, and the
+  Crypto Swap / Subscription Tracker embeds. `main` is up to date with
+  `origin/main`.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
