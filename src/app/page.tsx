@@ -113,7 +113,7 @@ export default function Home() {
               <div className="flex w-full items-center justify-between whitespace-nowrap">
                 <span className="text-[#5c5c5c]">Linkedin</span>
                 <a
-                  href="https://www.linkedin.com/in/evgeny-merzalov-4923403b8/"
+                  href="https://www.linkedin.com/in/evgenymerzalov"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ulink text-[#5c5c5c]"
