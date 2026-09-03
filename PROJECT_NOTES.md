@@ -506,11 +506,10 @@ eyeballing the full frame.
 
 - **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`,
   `392e681`), `/personal-finance-tracker` rebuild (`92370a1`), and the
-  lightbox + header-button-removal follow-up (`fac3c2e`) are pushed.
-  The same-day lightbox image-quality fix (see above — high-res Figma
-  re-export + the `fill`/`sizes` next/image fix) is a separate, later,
-  **uncommitted** change as of this writing — ask before assuming it
-  should be committed/pushed.
+  lightbox + header-button-removal follow-up (`fac3c2e`), and the
+  lightbox image-quality fix (`b033117`, "Fix blurry lightbox images on
+  the case page") are all pushed. `main` is up to date with
+  `origin/main`.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
