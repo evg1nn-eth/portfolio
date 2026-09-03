@@ -1,19 +1,17 @@
 @import "tailwindcss";
 
-:root {
-  --background: #fcfcfc;
-  --foreground: #202020;
-  --muted: #6f6f6f;
-  --border: #e8e8e8;
-  --border-hover: #e0e0e0;
-  --underline: #d9d9d9;
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-feature-settings: "cv01";
+  background: #fff;
+  color: #5c5c5c;
+  font-family: var(--font-geist), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: -0.35px;
+  line-height: 1.3;
+  font-feature-settings: "ss03" 1, "ss04" 1, "ss05" 1, "kern" 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .font-serif-accent {
@@ -21,17 +19,295 @@ body {
   font-style: italic;
 }
 
-.card-shadow {
-  box-shadow:
-    0px 0px 0px 1px #0000000f,
-    0px 1px 2px -1px #0000000f,
-    0px 2px 4px 0px #0000000a;
-  transition: box-shadow 200ms ease-out;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.card-shadow:hover {
+/* Animated underline link */
+.ulink {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+}
+.ulink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.64;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ulink:hover::after {
+  transform: scaleX(1);
+}
+
+/* Project rows: dim siblings on hover, reveal an arrow on the hovered one */
+.rows {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.work {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  white-space: nowrap;
+  padding: 4px 0;
+  transition: opacity 160ms cubic-bezier(0, 0, 0.58, 1);
+}
+.work:first-child {
+  padding-top: 0;
+}
+.work:last-child {
+  padding-bottom: 0;
+}
+.rows:hover .work {
+  opacity: 0.4;
+}
+.rows:hover .work:hover {
+  opacity: 1;
+}
+.work .role {
+  display: inline-flex;
+  align-items: center;
+}
+.work.linkable {
+  cursor: pointer;
+}
+.work.linkable .role::after {
+  content: "→";
+  display: inline-block;
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateX(-4px);
+  transition:
+    max-width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin-left 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 200ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.work.linkable:hover .role::after {
+  max-width: 1.2em;
+  margin-left: 5px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* "Under development" hover tip */
+.tip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9000;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+.tip-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: bottom center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #afafaf;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: -0.35px;
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.7) translateY(4px);
   box-shadow:
-    0px 0px 0px 1px #00000014,
-    0px 1px 2px -1px #00000014,
-    0px 2px 4px 0px #0000000f;
+    0 19px 2.5px rgba(0, 0, 0, 0),
+    0 12px 2.5px rgba(0, 0, 0, 0.01),
+    0 7px 2px rgba(0, 0, 0, 0.03),
+    0 3px 1.5px rgba(0, 0, 0, 0.05),
+    0 1px 1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.32);
+}
+.tip-tail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-top: 5px solid #afafaf;
+}
+@keyframes tipPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(4px);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.05) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes tipOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1.04) translateY(-1px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.55) translateY(6px);
+  }
+}
+.tip.show .tip-pill {
+  animation: tipPop 340ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.tip.leaving .tip-pill {
+  animation: tipOut 260ms cubic-bezier(0.4, 0, 0.7, 1) forwards;
+}
+
+/* Copy-to-clipboard icon: copy glyph morphs into a check mark */
+.icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  position: relative;
+  display: inline-flex;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.icon svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.icon svg path {
+  stroke-width: 1.5;
+  stroke-opacity: 0.4;
+  transition: stroke-opacity 240ms ease;
+}
+.icon:hover .ic-copy {
+  transform: scale(1.12) rotate(-8deg);
+}
+.icon:hover .ic-copy path {
+  stroke-opacity: 0.64;
+}
+.icon:active .ic-copy {
+  transform: scale(0.9);
+}
+.icon:focus-visible {
+  outline: none;
+}
+.icon:focus-visible .ic-copy path {
+  stroke-opacity: 0.64;
+}
+.icon:hover .ic-check path,
+.icon:focus-visible .ic-check path {
+  stroke-opacity: 0.4;
+}
+.icon .ic-copy,
+.icon .ic-check {
+  transition:
+    opacity 220ms ease,
+    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+.icon .ic-check {
+  opacity: 0;
+  transform: scale(0.4) rotate(-45deg);
+}
+.icon .ic-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 220ms ease;
+}
+.icon.copied .ic-copy {
+  opacity: 0;
+  transform: scale(0.4) rotate(45deg);
+}
+.icon.copied .ic-check {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+.icon.copied .ic-check path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 320ms cubic-bezier(0.65, 0, 0.35, 1) 130ms;
+}
+
+/* Page-load reveal: cascade top to bottom */
+@keyframes revealIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.content > * {
+  animation: revealIn 1500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.content > *:nth-child(1) {
+  animation-delay: 80ms;
+}
+.content > *:nth-child(2) {
+  animation-delay: 110ms;
+}
+.content > *:nth-child(3) {
+  animation-delay: 140ms;
+}
+.content > *:nth-child(4) {
+  animation-delay: 170ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content > * {
+    animation: none;
+  }
+  .tip .tip-pill {
+    transform: none;
+  }
+  .tip.show .tip-pill {
+    animation: none;
+    opacity: 1;
+  }
+  .tip.leaving .tip-pill {
+    animation: none;
+    opacity: 0;
+  }
+  .icon .ic-copy,
+  .icon .ic-check {
+    transition: opacity 120ms ease;
+    transform: none;
+  }
+  .icon.copied .ic-copy {
+    transform: none;
+  }
+  .icon.copied .ic-check {
+    transform: none;
+  }
+  .icon .ic-check path,
+  .icon.copied .ic-check path {
+    transition: none;
+  }
 }

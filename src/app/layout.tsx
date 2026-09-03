@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Libre_Baskerville } from "next/font/google";
+import { Geist, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+const geist = Geist({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-geist",
 });
 
 const libreBaskerville = Libre_Baskerville({
@@ -15,8 +15,9 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
-  title: "Evgeny Merzalov — Product Designer",
-  description: "Product designer working on product and mobile design.",
+  title: "Евгений Мерцалов — Продуктовый дизайнер",
+  description:
+    "Продуктовый дизайнер, создаю понятные, интуитивные мобильные интерфейсы для цифровых продуктов.",
 };
 
 export default function RootLayout({
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${libreBaskerville.variable} h-full scroll-smooth antialiased`}
+      className={`${geist.variable} ${libreBaskerville.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

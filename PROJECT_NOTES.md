@@ -1,14 +1,17 @@
 # Project Notes — Evgeny Merzalov Portfolio
 
-Personal portfolio site for Evgeny Merzalov — interface designer, former
+Personal portfolio site for Evgeny Merzalov — product designer, former
 professional footballer, based in Orel. Next.js (App Router) + Tailwind
-CSS v4 + TypeScript. Single homepage: avatar/bio header, project cards,
-design-approach text. No experience/work-history section, no case-study
-pages currently.
+CSS v4 + TypeScript. Single homepage, resume-row style (name/role, bio,
+Работы/Проекты/Контакты sections), Russian copy, targeting the Russian
+job market. Two English case-study pages (`/ghost-vpn`,
+`/personal-finance-tracker`) still exist from the prior design and were
+deliberately left untouched in the 2026-09-03 rebuild — see below.
 
 Dev server: `npm run dev` (Turbopack), localhost:3000.
-Repo: https://github.com/evg1nn-eth/portfolio (public, pushed) — not yet
-re-pushed after the 2026-08-11 rebuild described below.
+Repo: https://github.com/evg1nn-eth/portfolio (public) — not re-pushed
+since the 2026-08-11 rebuild; the 2026-09-03 rebuild below is also
+uncommitted as of this writing.
 
 **Always verify visual changes with a headless Chrome screenshot before
 claiming something is fixed** — this user has caught several wrong/stale
@@ -202,13 +205,133 @@ it. If asked to drop the repo's image weight later, downscaling these
 back toward ~2400px wide before import would lose nothing visible at the
 `sizes="692px"` this page actually renders at.
 
+## 2026-09-03 rebuild — Russian resume-style homepage
+
+Full homepage rebuild, replacing the 2026-08-11 jakub.kr-styled English
+version. Goal stated by the user: make the portfolio read as Russian-
+market-oriented ("похожим на ру... чтобы я искал работу более в русском
+секторе"). Source of truth was explicitly split in two: **layout/content/
+grid pixel-for-pixel from a user-made Figma file** ("ничего не придумывать
+своего... как макет есть, так ты его и переносишь"), **animation/
+interaction from a reference site, dom.fyi**, transferred "almost
+entirely, except a couple of changes" (changes specified by the user when
+asked, see below) — not this project's own invention either way.
+
+Figma file (`7yjmgxhviePniTBtHHnZ9G`) contained several historical Home
+iterations on one page/canvas (`Home 3`/`Home 4`/`Home 6`, node ids
+`57:2159`/`57:2225`/`57:2300` — English, structurally identical to the
+2026-08-11 design, i.e. old work kept for reference) plus one plain
+`Home` frame (node `82:7838`) with all-Russian copy — identified as the
+actual target by content alone, confirmed by screenshot comparison before
+building anything. `get_design_context` on `82:7838` gave exact copy,
+colors (`#5c5c5c` body/value text, `#999` labels/meta, `#f5f5f5`
+dividers) and spacing (480px-wide centered column, 24px section gaps,
+16px internal gaps, 4px/8px micro-gaps) — carried over as literal Tailwind
+arbitrary values, matching this project's existing convention.
+
+dom.fyi (`DP™ — Brand & Visual Designer`, a Cloudflare-fronted **static
+HTML/CSS/vanilla-JS** site, not a framework SPA) turned out to already use
+the exact same three color tokens as rgba-on-white (`rgba(0,0,0,.64)` /
+`.4` / `.04`, confirmed by computing the blended hex — they match `#5c5c5c`/
+`#999`/`#f5f5f5` exactly) and the same 480px column and Geist font — strong
+evidence the Figma design was itself built to match this reference, not a
+coincidence. Its full CSS/JS was read directly (`curl` the page, no
+rendering needed since nothing depends on client JS for markup). Ported:
+Geist font (`ss03/ss04/ss05` feature settings, `-0.35px` letter-spacing,
+`1.3` line-height, confirmed available via `next/font/google` incl. a
+`cyrillic` subset), the animated-underline link (`.ulink`), the sibling-
+dimming + arrow-reveal project-row hover (`.rows`/`.work`), the page-load
+opacity-cascade reveal (`.content > *`, 1500ms, 80ms base + 30ms/item
+stagger — no vertical translate, confirmed from the live site's own DEF
+constants, not guessed), and the "under development" hover-tip pill
+(`.tip`/`.tip-pill`/`.tip-tail`, positioned via `getBoundingClientRect`).
+
+**Explicitly excluded from the port, per the user when asked directly**
+(the "couple of changes" they'd flagged in advance): the Web Audio click
+sound on copy, the live London clock in the footer (dom.fyi has no
+footer content here anyway — none was invented), the click-to-open
+project modal with image gallery, and the bottom-right hover thumbnail
+preview box. The sibling-dim/arrow-reveal hover *behavior* on project
+rows was explicitly kept even without the preview box.
+
+Content/structure decisions, each confirmed with the user rather than
+assumed (all via one round of `AskUserQuestion`, given the scope and
+irreversibility of a full rebuild):
+- The name renders as **"Евгений Мерцалов"**, exactly as typed in the
+  Figma file — flagged to the user as a likely typo (real surname is
+  Мерзалов, matching the email/LinkedIn), user explicitly chose to keep
+  the Figma spelling as-is. Don't "fix" this without being asked again.
+- **Ghost VPN** moved from the projects grid into a new "Работы" (Work)
+  section as a single row (`Ghost VPN — Q3 2026`), mirroring dom.fyi's
+  own single-row "Projects" section (used there for their own
+  in-development project, Selah™). It is **not a link** to `/ghost-vpn`
+  — hovering "Q3 2026" shows a "В разработке" tip pill instead, same
+  pattern as dom.fyi's Selah™ tooltip, just Russian copy. `/ghost-vpn`
+  itself still exists on disk and still works if visited directly, it's
+  just unlinked from the homepage now.
+- "Проекты" now lists **three** items, only one of which is real: Personal
+  Finance Tracker (→ `/personal-finance-tracker`, existing case page,
+  full hover interactivity + arrow), Artist Subscription and Subscription
+  Tracker (no case pages exist for either — not invented — rendered as
+  plain non-clickable rows that still participate in the sibling-dim
+  hover group, just without the arrow/cursor-pointer, own judgment call
+  not separately asked about since low-stakes/reversible). If real case
+  pages get built for these two later, just add `href` to their entries
+  in the `projects` array in `src/app/page.tsx`.
+- A copy-to-clipboard icon (dom.fyi's copy⇄check morph SVG, sound
+  removed) was added next to the Email row specifically, per explicit
+  request — not the whole dom.fyi inline-paragraph contact block, which
+  wasn't asked for and doesn't match this project's row-based Контакты
+  layout from Figma.
+
+New components: `src/app/components/WorkTooltip.tsx` (the hover-tip
+pill, portaled to `document.body` via `createPortal` — required, not
+optional: the reveal animation puts a non-`none` `transform` on its
+`.content` ancestor for the life of the page since dom.fyi's own
+`distance` config is `0` — `transform: translateY(0px)`, still a
+containing block per spec — which would otherwise break `position:fixed`
+positioning if the tip were nested inside `.content` like dom.fyi itself
+avoids by placing its own equivalent overlay elements as siblings after
+`</main>`) and `src/app/components/CopyEmailIcon.tsx` (replaces the old
+text-toggle `EmailCopyButton.tsx`, deleted — was only ever used from
+`page.tsx`, safe to remove outright).
+
+**Not done, out of scope for this pass** (only the homepage was in
+scope; user said as much — "Это будет главная страница"): `/ghost-vpn`
+and `/personal-finance-tracker` still use the old 2026-08-11 English
+jakub.kr styling (card layout, `#6f6f6f`/`#202020` colors, Inter-adjacent
+feel) and haven't been touched to match the new Geist/resume look or
+translated to Russian. Root `<html lang>` was deliberately left `"en"`
+rather than flipped to `"ru"` — the layout is shared across all routes
+and the two case pages are still English; revisit once/if they get
+rebuilt too. `.card-shadow` was removed from `globals.css` as dead code
+(no longer referenced anywhere after the homepage rewrite);
+`.font-serif-accent` was kept — both case pages still use it.
+
+Verified with Puppeteer (`puppeteer-core` installed via
+`npm install --no-save`, then uninstalled again after — never added to
+`package.json`/lockfile) rather than just screenshots, since this rebuild
+is hover/interaction-heavy in a way static screenshots can't confirm:
+tooltip show/hide, sibling-dim + arrow reveal (and that it's absent on
+the two non-linkable project rows), underline-on-hover, copy-button
+`copied` state toggling, click-through navigation to
+`/personal-finance-tracker`, and — per this file's own standing mobile-
+overflow warning below — `scrollWidth === clientWidth` confirmed at both
+390px and 320px viewports despite the `white-space: nowrap` rows.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
-  headings. Differentiate only via `font-weight` and color, matching
-  homepage exactly. (Independently reinforced by the jakub.kr rebuild
-  above — this is now doubly confirmed, not just a one-off preference.)
-- Text color: primary `#202020`, secondary `#6f6f6f` — not pure black.
+  headings. Differentiate only via `font-weight` and color. (Independently
+  reinforced by both the jakub.kr rebuild and the 2026-09-03 Figma/dom.fyi
+  rebuild above — three unrelated sources landing on the same rule now,
+  not just a one-off preference.)
+- Text color, **homepage** (2026-09-03 rebuild): primary `#5c5c5c`,
+  secondary/labels `#999` — not pure black. The two case pages
+  (`/ghost-vpn`, `/personal-finance-tracker`) are un-rebuilt and still use
+  the older jakub.kr palette, primary `#202020` / secondary `#6f6f6f` —
+  don't assume one palette applies site-wide until/unless those pages get
+  redone too.
 - **No max-width constraint on body text** — spans the full inner
   container.
 - Fonts must be verified free/licensed before use — see the licensing
@@ -220,6 +343,10 @@ back toward ~2400px wide before import would lose nothing visible at the
 
 ## Known open items
 
+- The 2026-09-03 Russian resume-style rebuild (see above) is **uncommitted**
+  as of this writing — working tree has the new/changed homepage files
+  staged in disk but no commit made, since committing wasn't requested
+  this session. Ask before assuming it should be committed/pushed.
 - `public/cv.pdf` still not added locally — CV link points straight to a
   Google Drive URL instead, so this isn't currently broken.
 - `README.md` is gone (deleted in the 2026-08-11 wipe) and was never
