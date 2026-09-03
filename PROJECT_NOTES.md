@@ -2,11 +2,12 @@
 
 Personal portfolio site for Evgeny Merzalov — product designer, former
 professional footballer, based in Orel. Next.js (App Router) + Tailwind
-CSS v4 + TypeScript. Single homepage, resume-row style (name/role, bio,
+CSS v4 + TypeScript. Homepage, resume-row style (name/role, bio,
 Работы/Проекты/Контакты sections), Russian copy, targeting the Russian
-job market. Two English case-study pages (`/ghost-vpn`,
-`/personal-finance-tracker`) still exist from the prior design and were
-deliberately left untouched in the 2026-09-03 rebuild — see below.
+job market. `/personal-finance-tracker` was rebuilt the same way
+2026-09-03 (see below); `/ghost-vpn` is still the older English
+jakub.kr-styled page and is currently unlinked from the homepage (see the
+2026-09-03 homepage entry — the Работы row points nowhere on purpose).
 
 Dev server: `npm run dev` (Turbopack), localhost:3000.
 Repo: https://github.com/evg1nn-eth/portfolio (public, pushed) —
@@ -298,15 +299,15 @@ text-toggle `EmailCopyButton.tsx`, deleted — was only ever used from
 
 **Not done, out of scope for this pass** (only the homepage was in
 scope; user said as much — "Это будет главная страница"): `/ghost-vpn`
-and `/personal-finance-tracker` still use the old 2026-08-11 English
-jakub.kr styling (card layout, `#6f6f6f`/`#202020` colors, Inter-adjacent
-feel) and haven't been touched to match the new Geist/resume look or
-translated to Russian. Root `<html lang>` was deliberately left `"en"`
-rather than flipped to `"ru"` — the layout is shared across all routes
-and the two case pages are still English; revisit once/if they get
-rebuilt too. `.card-shadow` was removed from `globals.css` as dead code
-(no longer referenced anywhere after the homepage rewrite);
-`.font-serif-accent` was kept — both case pages still use it.
+still used the old 2026-08-11 English jakub.kr styling (card layout,
+`#6f6f6f`/`#202020` colors, Inter-adjacent feel) as of this rebuild —
+`/personal-finance-tracker` got the same Figma/Geist/resume treatment
+right after, same day, see the dedicated entry below. Root `<html lang>`
+was deliberately left `"en"` rather than flipped to `"ru"` — `/ghost-vpn`
+is still English; revisit once/if it gets rebuilt too. `.card-shadow`
+was removed from `globals.css` as dead code (no longer referenced
+anywhere after the homepage rewrite); `.font-serif-accent` was kept —
+both case pages still use it.
 
 Verified with Puppeteer (`puppeteer-core` installed via
 `npm install --no-save`, then uninstalled again after — never added to
@@ -319,6 +320,78 @@ the two non-linkable project rows), underline-on-hover, copy-button
 overflow warning below — `scrollWidth === clientWidth` confirmed at both
 390px and 320px viewports despite the `white-space: nowrap` rows.
 
+### `/personal-finance-tracker` rebuilt to match, same day
+
+Same Figma file has a second frame, `Personal Finance Tracker` (node
+`82:7881`), sitting next to the new `Home` frame — a case-study page
+already restyled to this project's new look (same 480px column, same
+`#5c5c5c`/`#999`/`#f5f5f5` tokens, no card borders). Rebuilt the route to
+match, replacing the old jakub.kr-styled English version.
+
+`get_design_context` on the whole frame (`82:7881`) came back as sparse
+XML metadata rather than code — too large/complex for a full React
+reconstruction — so per the design-to-code skill's guidance ("request
+only the visible child regions needed"), split it: read copy directly out
+of the metadata XML (text node `name` attributes carry the literal
+string, same trick as the homepage), and got real code/assets only for
+the five image blocks specifically.
+
+Those five image blocks turned out to be **fully-composed vector phone
+mockups** (Apple HIG components — iPhone frames, status bars, SF Pro
+Rounded text — via Figma Code Connect), not raster screenshots like the
+old page's `src/app/images/pft/*.png`. Reconstructing that as live HTML
+would mean shipping SF Pro Rounded (an Apple system font, not freely
+licensed for web embedding — would have violated this project's own font-
+licensing rule above) and hand-rebuilding dozens of nested icons for
+what's clearly meant to be a flat illustrative screenshot, not
+interactive UI. Used `download_assets` (`defaultScale: 3`, i.e. 1440×810
+for a 480×270-point frame — `get_screenshot`'s `maxDimension` does not
+upscale past a node's native render size, confirmed by testing up to
+4000 and getting 480×270 back every time) to export each of the five
+groups as a flat PNG instead, and overwrote the old files in place
+(`onboarding.png`, `home-flow.png`, `stats.png`, `settings.png`,
+`ui-kit.png` — content order/composition changed but the five-screenshot
+shape happened to match exactly, so no import-path changes needed).
+
+**One of the five, `ui-kit.png`, is genuinely a bit messy** — its content
+(533px) overflows its own 480px frame on both edges in the Figma source
+itself (confirmed identically in both `get_screenshot` and
+`download_assets` renders, so not a rendering bug on this end), giving a
+few clipped component swatches at the left/right edges. Left it as-is
+rather than cropping or re-composing it myself — the instruction was to
+carry the Figma source over as-is, and this is a source imperfection, not
+mine to unilaterally edit. Worth a quick look if the user notices it
+looks rough.
+
+Page structure/copy source of truth was 100% the Figma metadata — title,
+intro paragraph, and three body sections (Контекст и роль / Проблема /
+Результаты) all came out of the same node in one read, no invention.
+Structurally much simpler than the old page: one hero image, then all
+three text sections back-to-back, then the four remaining images
+back-to-back (old page interleaved text and images section-by-section).
+Spacing throughout the frame is a flat 24px between every top-level block
+and 16px between a label/title and its body text — same numbers as the
+homepage rebuild, extended the shared `.content > *` reveal-animation
+stagger in `globals.css` from 4 to 9 `nth-child` steps (same dom.fyi
+arithmetic — `80ms + (n-1)×30ms` — just carried one page's worth further,
+not a new formula) since this page has 9 top-level content blocks vs the
+homepage's 4.
+
+Kept two things from the *old* case page that aren't in the Figma
+mockup at all (the Figma frame is content-only, no header chrome): the
+circular back-to-home button, and the "open in Figma" button (now
+pointing at this same file/node, `82:7881`, not the old unrelated Figma
+file the previous version linked to). Both recolored to the new token
+set. This mirrors the exact same judgment call already made and noted for
+this page during the 2026-08-11 rebuild — established precedent on this
+specific page, not a fresh invention.
+
+Verified the same way as the homepage: Puppeteer against the real dev
+server (`puppeteer-core` via `npm install --no-save`, uninstalled after),
+`scrollWidth === clientWidth` at 390px/320px, zero console/page errors,
+back-button navigation, and the Figma-link `href`. Screenshotted and
+visually diffed against the Figma frame before calling it done.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
@@ -326,12 +399,12 @@ overflow warning below — `scrollWidth === clientWidth` confirmed at both
   reinforced by both the jakub.kr rebuild and the 2026-09-03 Figma/dom.fyi
   rebuild above — three unrelated sources landing on the same rule now,
   not just a one-off preference.)
-- Text color, **homepage** (2026-09-03 rebuild): primary `#5c5c5c`,
-  secondary/labels `#999` — not pure black. The two case pages
-  (`/ghost-vpn`, `/personal-finance-tracker`) are un-rebuilt and still use
+- Text color, current (2026-09-03 rebuild): primary `#5c5c5c`,
+  secondary/labels `#999` — not pure black. Applies to the homepage and
+  `/personal-finance-tracker`. `/ghost-vpn` is un-rebuilt and still uses
   the older jakub.kr palette, primary `#202020` / secondary `#6f6f6f` —
-  don't assume one palette applies site-wide until/unless those pages get
-  redone too.
+  don't assume one palette applies site-wide until/unless it gets redone
+  too.
 - **No max-width constraint on body text** — spans the full inner
   container.
 - Fonts must be verified free/licensed before use — see the licensing
@@ -344,8 +417,18 @@ overflow warning below — `scrollWidth === clientWidth` confirmed at both
 ## Known open items
 
 - **Pushed to GitHub 2026-09-03** (commit `7726494`, "Rebuild homepage as
-  Russian resume-style layout from Figma") — `main` is up to date with
-  `origin/main`.
+  Russian resume-style layout from Figma", plus `392e681` noting it) —
+  `main` was up to date with `origin/main` as of the homepage rebuild.
+  The same-day `/personal-finance-tracker` rebuild (see above) is a
+  separate, later, **uncommitted** change as of this writing — ask before
+  assuming it should be committed/pushed too.
+- `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
+  component swatches clipped at its left/right edges — a genuine overflow
+  in the Figma source frame itself (533px of content in a 480px frame),
+  not a rendering bug here. Left as-is per "carry the source over as-is."
+  If it ever gets fixed on the Figma side, re-export node `94:11283` at
+  `defaultScale: 3` via `download_assets` and drop it in over the
+  existing file — no code changes needed.
 - `public/cv.pdf` still not added locally — CV link points straight to a
   Google Drive URL instead, so this isn't currently broken.
 - `README.md` is gone (deleted in the 2026-08-11 wipe) and was never

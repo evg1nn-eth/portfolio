@@ -279,6 +279,21 @@ a {
 .content > *:nth-child(4) {
   animation-delay: 170ms;
 }
+.content > *:nth-child(5) {
+  animation-delay: 200ms;
+}
+.content > *:nth-child(6) {
+  animation-delay: 230ms;
+}
+.content > *:nth-child(7) {
+  animation-delay: 260ms;
+}
+.content > *:nth-child(8) {
+  animation-delay: 290ms;
+}
+.content > *:nth-child(9) {
+  animation-delay: 320ms;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .content > * {

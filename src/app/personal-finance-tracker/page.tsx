@@ -8,29 +8,21 @@ import settings from "../images/pft/settings.png";
 import uiKit from "../images/pft/ui-kit.png";
 
 export const metadata: Metadata = {
-  title: "Personal Finance Tracker — Evgeny Merzalov",
+  title: "Personal Finance Tracker — Евгений Мерцалов",
   description:
-    "A concept for a mobile app focused on personal finance management.",
+    "Концепт мобильного приложения для управления личными финансами.",
 };
 
-const bodyText = "text-[#6f6f6f] leading-relaxed";
-const label = "font-[450] text-[#202020]";
 const figmaUrl =
-  "https://www.figma.com/design/9FZOIuHHzvMP9IpjJtnJGY/Valto-Finance-Tracker-%E2%80%94-Mobile-App---UI-UX?node-id=1-2&t=L7VWE3mjhVKMmLnK-1";
+  "https://www.figma.com/design/7yjmgxhviePniTBtHHnZ9G/Evgeny-Merzalov-%E2%80%94-Portfolio?node-id=82-7881";
 
-function CaseImage({
-  src,
-  alt,
-}: {
-  src: StaticImageData;
-  alt: string;
-}) {
+function CaseImage({ src, alt }: { src: StaticImageData; alt: string }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#e8e8e8]">
+    <div className="overflow-hidden rounded-[4px]">
       <Image
         src={src}
         alt={alt}
-        sizes="692px"
+        sizes="480px"
         quality={100}
         className="h-auto w-full"
       />
@@ -38,38 +30,25 @@ function CaseImage({
   );
 }
 
-function CaseSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function CaseSection({ title, text }: { title: string; text: string }) {
   return (
-    <div className="flex flex-col gap-4">
-      <p className={label}>{title}</p>
-      {children}
+    <div className="flex w-full flex-col gap-4">
+      <p className="text-[#999]">{title}</p>
+      <p className="text-[#5c5c5c]">{text}</p>
     </div>
   );
 }
 
+const navButton =
+  "flex size-9 shrink-0 items-center justify-center rounded-full bg-[#f5f5f5] text-[#999] transition-colors duration-200 ease-out hover:bg-[#ececec] hover:text-[#5c5c5c]";
+
 export default function PersonalFinanceTracker() {
   return (
-    <div className="min-h-screen bg-[#fcfcfc]">
-      <div className="mx-auto max-w-[43.25rem] px-6 py-12 sm:py-24">
-        <header className="mb-16 flex w-full items-center justify-between sm:mb-24">
-          <Link
-            href="/"
-            aria-label="Home"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#f0f0f0] text-[#6f6f6f] transition-colors duration-200 ease-out hover:bg-[#e8e8e8] hover:text-[#202020]"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
+    <div className="flex min-h-screen w-full flex-col items-center px-4 pt-20 pb-4">
+      <div className="w-[480px] max-w-full">
+        <header className="mb-8 flex w-full items-center justify-between">
+          <Link href="/" aria-label="На главную" className={navButton}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="M19 12H5M5 12L12 19M5 12L12 5"
                 stroke="currentColor"
@@ -79,13 +58,12 @@ export default function PersonalFinanceTracker() {
               />
             </svg>
           </Link>
-
           <a
             href={figmaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open in Figma"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#f0f0f0] text-[#6f6f6f] transition-colors duration-200 ease-out hover:bg-[#e8e8e8] hover:text-[#202020]"
+            aria-label="Открыть в Figma"
+            className={navButton}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
@@ -104,71 +82,43 @@ export default function PersonalFinanceTracker() {
           </a>
         </header>
 
-        <main>
-          <div className="flex flex-col gap-1">
-            <h1 className="font-[550] text-[#202020] leading-snug">
+        <div className="content flex w-full flex-col gap-6">
+          <div className="flex w-full flex-col gap-4">
+            <h1 className="font-normal text-[#5c5c5c] leading-[1.3]">
               Personal Finance Tracker
             </h1>
-            <p className={`mt-4 ${bodyText}`}>
-              In this case, I worked on a concept for a mobile app focused on
-              personal finance management. My task was to simplify expense
-              tracking and make the user&apos;s financial picture{" "}
-              <span className="font-serif-accent">clear and understandable</span>{" "}
-              through the interface and user flows.
+            <p className="text-[#5c5c5c]">
+              Концепт мобильного приложения для управления личными финансами.
+              Задача упростить контроль расходов и сделать финансовую картину
+              понятной с первого взгляда.
             </p>
           </div>
 
-          <div className="mt-12 flex flex-col gap-12">
-            <CaseImage
-              src={onboarding}
-              alt="Onboarding, sign-in, and notification permission screens"
-            />
+          <CaseImage
+            src={onboarding}
+            alt="Экраны входа, ввода кода и разрешения на уведомления"
+          />
 
-            <CaseSection title="Problem">
-              <p className={bodyText}>
-                Financial data is often presented in an overly complex way.
-                Users have to spend time parsing numbers and tables instead
-                of quickly understanding their situation and making a
-                decision.
-              </p>
-            </CaseSection>
+          <CaseSection
+            title="Контекст и роль"
+            text="Финансовые приложения часто перегружают пользователя: чтобы понять, что происходит с деньгами, приходится разбираться в цифрах и таблицах. Я поставил себе цель убрать этот порог и собрать интерфейс вокруг самых частых задач, с которыми человек заходит в приложение каждый день, не заставляя его вникать в лишнее."
+          />
 
-            <CaseSection title="Case Goal">
-              <p className={bodyText}>
-                Focus on the basic,{" "}
-                <span className="font-semibold text-[#202020]">
-                  most common scenarios
-                </span>{" "}
-                users rely on:
-              </p>
-              <ol className={`${bodyText} flex list-decimal flex-col gap-1 pl-5`}>
-                <li>Viewing overall balance and current financial status</li>
-                <li>Analyzing expenses by category</li>
-                <li>
-                  Visualizing the financial picture clearly, without
-                  overloading the interface
-                </li>
-              </ol>
-            </CaseSection>
+          <CaseSection
+            title="Проблема"
+            text="Кейс делал как концепт, поэтому опирался на анализ существующих решений и типовых пользовательских сценариев. Сначала выстроил логику и структуру экранов, определив, что выносить на первый план, а что убирать вглубь. Дальше собрал ключевые флоу: просмотр баланса, добавление операции и разбивку расходов по категориям, следя за тем, чтобы на каждом шаге пользователь видел ровно столько информации, сколько нужно для решения."
+          />
 
-            <CaseImage
-              src={homeFlow}
-              alt="Home balance screen and add operation flow"
-            />
+          <CaseSection
+            title="Результаты"
+            text="Получился чистый интерфейс, где состояние финансов считывается с первого взгляда, а не прячется в таблицах. Концепт показывает, как можно снизить порог входа в управление деньгами и сделать рутинный контроль расходов простым. Следующим шагом было бы протестировать флоу на реальных пользователях и добавить персонализацию под разные финансовые привычки."
+          />
 
-            <CaseSection title="Approach">
-              <p className={bodyText}>
-                This case was created as a concept. I worked on the interface
-                logic and screen structure, drawing on existing product
-                patterns and common user scenarios.
-              </p>
-            </CaseSection>
-
-            <CaseImage src={stats} alt="Expense statistics screens" />
-            <CaseImage src={settings} alt="Settings screen" />
-            <CaseImage src={uiKit} alt="UI kit components" />
-          </div>
-        </main>
+          <CaseImage src={homeFlow} alt="Экран баланса и добавление операции" />
+          <CaseImage src={stats} alt="Экраны статистики расходов" />
+          <CaseImage src={settings} alt="Экран настроек" />
+          <CaseImage src={uiKit} alt="Компоненты UI-кита" />
+        </div>
       </div>
     </div>
   );
