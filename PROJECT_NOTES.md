@@ -472,11 +472,11 @@ confirmed absent, zero console errors, no mobile overflow at 390px.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`, plus
-  `392e681` noting it) and the `/personal-finance-tracker` rebuild
-  (`92370a1`) are pushed. The same-day lightbox + header-button-removal
-  follow-up (see above) is a separate, later, **uncommitted** change as
-  of this writing — ask before assuming it should be committed/pushed.
+- **Pushed to GitHub 2026-09-03** — homepage rebuild (`7726494`,
+  `392e681`), `/personal-finance-tracker` rebuild (`92370a1`), and the
+  lightbox + header-button-removal follow-up (`fac3c2e`, "Add image
+  lightbox to case page, drop header nav buttons") are all pushed.
+  `main` is up to date with `origin/main`.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),
