@@ -75,11 +75,9 @@ export default function Home() {
             <p className="text-[#999]">Проекты</p>
             <div className="flex w-full items-center justify-between whitespace-nowrap">
               <span className="text-[#5c5c5c]">Ghost VPN</span>
-              <WorkTooltip
-                label="Q3 2026"
-                tip="В разработке"
-                className="text-[#999]"
-              />
+              <WorkTooltip tip="В разработке" className="text-[#999]">
+                Q3 2026
+              </WorkTooltip>
             </div>
           </div>
 

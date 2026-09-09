@@ -6,13 +6,15 @@ import { createPortal } from "react-dom";
 const GAP = 10;
 
 export default function WorkTooltip({
-  label,
+  children,
   tip,
   className,
+  wrap,
 }: {
-  label: string;
+  children: React.ReactNode;
   tip: string;
   className?: string;
+  wrap?: boolean;
 }) {
   const metaRef = useRef<HTMLSpanElement>(null);
   const [state, setState] = useState<"idle" | "show" | "leaving">("idle");
@@ -60,7 +62,7 @@ export default function WorkTooltip({
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
       >
-        {label}
+        {children}
       </span>
       {state !== "idle" &&
         createPortal(
@@ -69,7 +71,7 @@ export default function WorkTooltip({
             style={{ left: pos.left, top: pos.top }}
             role="tooltip"
           >
-            <span className="tip-pill">
+            <span className={`tip-pill${wrap ? " wrap" : ""}`}>
               {tip}
               <span className="tip-tail" />
             </span>

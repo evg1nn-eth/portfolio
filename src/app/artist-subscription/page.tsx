@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CaseGallery, GalleryImage } from "../components/CaseGallery";
+import WorkTooltip from "../components/WorkTooltip";
 import intro from "../images/artist-subscription/intro.png";
-import benchmark from "../images/artist-subscription/benchmark.png";
 import solution from "../images/artist-subscription/solution.png";
 import flow from "../images/artist-subscription/flow.png";
+import yandexMusicIcon from "../images/artist-subscription/icons/yandex-music.svg";
+import appleMusicIcon from "../images/artist-subscription/icons/apple-music.svg";
+import spotifyIcon from "../images/artist-subscription/icons/spotify.svg";
+import soundcloudIcon from "../images/artist-subscription/icons/soundcloud.svg";
+import vkMusicIcon from "../images/artist-subscription/icons/vk-music.svg";
 
 export const metadata: Metadata = {
   title: "Artist Subscription — Евгений Мерцалов",
@@ -35,16 +41,45 @@ function CaseSection({
 const images = [
   { src: intro, alt: "Экраны профиля артиста и плеера трека" },
   {
-    src: benchmark,
-    alt: "Иконки Яндекс Музыки, Apple Music, Spotify, SoundCloud и VK Музыки",
-  },
-  {
     src: solution,
     alt: "Экраны шторки с предложением включить уведомления и тоста подтверждения",
   },
   {
     src: flow,
     alt: "Схема сценария от подписки до уведомления о релизе на экране блокировки",
+  },
+];
+
+const benchmarkIcons = [
+  {
+    name: "yandex-music",
+    icon: yandexMusicIcon,
+    alt: "Яндекс Музыка",
+    tip: "Удобно переходить к артистам прямо из трека, даже если их несколько. Но подписка никак не объясняется, а при нажатии меняется только иконка.",
+  },
+  {
+    name: "apple-music",
+    icon: appleMusicIcon,
+    alt: "Apple Music",
+    tip: "Перейти можно только к основному артисту трека. Подписка спрятана в маленькой иконке, без подтверждения и объяснения, что она даст.",
+  },
+  {
+    name: "spotify",
+    icon: spotifyIcon,
+    alt: "Spotify",
+    tip: "Если исполнителей несколько, выбрать нужного неудобно. Зато после подписки сразу появляется уведомление, что артист добавлен в библиотеку — понятно, что действие сработало.",
+  },
+  {
+    name: "soundcloud",
+    icon: soundcloudIcon,
+    alt: "SoundCloud",
+    tip: "Хорошо подсвечивает подписку и объясняет её ценность через уведомления о релизах. Но выбрать одного из нескольких исполнителей нельзя.",
+  },
+  {
+    name: "vk-music",
+    icon: vkMusicIcon,
+    alt: "VK Музыка",
+    tip: "Подписка на артиста есть, но живёт отдельно от трека: чтобы подписаться, нужно уйти на страницу исполнителя. Что даст подписка — не объясняется.",
   },
 ];
 
@@ -89,7 +124,13 @@ export default function ArtistSubscription() {
 
             <div className="flex w-full flex-col gap-4">
               <p className="text-[#999]">Бенчмаркинг</p>
-              <GalleryImage index={1} {...images[1]} />
+              <div className="flex w-full items-center justify-center gap-6 py-[66px]">
+                {benchmarkIcons.map(({ name, icon, alt, tip }) => (
+                  <WorkTooltip key={name} tip={tip} wrap>
+                    <Image src={icon} alt={alt} className="size-12" />
+                  </WorkTooltip>
+                ))}
+              </div>
               <div className="flex w-full flex-col gap-2">
                 <p className="text-[#999]">Общий вывод</p>
                 <p className="text-[#5c5c5c]">
@@ -148,9 +189,9 @@ export default function ArtistSubscription() {
               />
             </div>
 
-            <GalleryImage index={2} {...images[2]} />
+            <GalleryImage index={1} {...images[1]} />
 
-            <GalleryImage index={3} {...images[3]} />
+            <GalleryImage index={2} {...images[2]} />
 
             <CaseSection
               title="Рефлексия"

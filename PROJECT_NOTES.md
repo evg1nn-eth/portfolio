@@ -710,6 +710,56 @@ at 1280px and 390px, lightbox opens on click. Production build
 Screenshotted the full case page and cross-checked section order and
 image content against the Figma frame before calling it done.
 
+### Бенчмаркинг icons made individually interactive, same week
+
+The flat `benchmark.png` export (the row of 5 streaming-service icons)
+was replaced with 5 real, separately-hoverable icons, each showing its
+own long-form comparison note on hover — same visual mechanism as the
+homepage's Ghost VPN "В разработке" tip, but with per-service body text
+instead of a short date label. **Copy for the 5 tips was supplied
+directly by the user in this conversation, not sourced from Figma** —
+first time on this project a piece of on-page copy didn't come from
+either the Figma file or recovered git history; worth remembering if a
+future Figma re-export of this section ever conflicts with it, this text
+is the newer, deliberate source.
+
+Re-fetched `get_design_context` on the `Бенчмаркинг` cover node
+(`176:3077`) specifically to get the 5 icons as individual named layers
+(`Icon/Media/YandexMusic`, `Icon/Media/AppleMusic`, `Icon/Media/Spotify`,
+an unnamed `Frame` — SoundCloud, confirmed by the icon glyph and by the
+"Ближе всех SoundCloud" line in the adjacent body text — and
+`vk-music-sign-logo 1`) rather than reusing the flat composite exported
+earlier; downloaded each as its own 48×48 SVG into
+`src/app/images/artist-subscription/icons/`, same `next/image`-on-a-
+static-import pattern as the homepage's `ghost.svg`/`concept.svg`
+project icons. Deleted the now-unused `benchmark.png` and dropped it
+from the case page's lightbox `images` array (reindexed the two
+remaining `GalleryImage`s) — a hover-tooltip row of app icons has no
+reason to also open in the click-to-zoom lightbox.
+
+**Generalized `WorkTooltip.tsx`** (previously hardcoded to a plain-text
+`label` prop, single use site) to take `children` as the trigger instead,
+so it can wrap an `<Image>` icon as easily as a text span — updated the
+one existing call site (Ghost VPN's `Q3 2026` on the homepage) to the new
+children-based API, confirmed via Puppeteer that its tooltip still fires
+identically after the refactor, not just that the new one does. Added an
+opt-in `wrap` prop: the existing `.tip-pill` CSS was `white-space:
+nowrap` sized for short labels like "В разработке"; a new `.tip-pill.wrap`
+modifier (`white-space: normal`, `max-width: 260px`, left-aligned,
+`border-radius: 16px` instead of the full 999px stadium shape, which
+looks odd once a pill is several lines tall) handles the much longer
+per-service sentences here. Kept the component filename as `WorkTooltip`
+despite it no longer being work-row-specific — a rename was extra churn
+not asked for.
+
+Verified with Puppeteer: all 5 tips fire with the correct per-icon text
+in source order (Yandex Music → Apple Music → Spotify → SoundCloud → VK
+Music, matching the order the user supplied them in and the Figma row's
+own left-to-right layout), the homepage's unrelated `Q3 2026` tooltip
+still shows "В разработке" post-refactor, zero console/page errors,
+`scrollWidth === clientWidth` at 1280px and 390px. Production build
+clean.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
@@ -734,8 +784,9 @@ image content against the Figma frame before calling it done.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-09** (commit adding the Artist Subscription
-  case page + homepage row, see the dated entry above) — `main` is up to
+- **Pushed to GitHub 2026-09-09** through the Бенчмаркинг-icons commit
+  (see the two dated entries above: the Artist Subscription case page +
+  homepage row, then the interactive benchmark icons) — `main` is up to
   date with `origin/main`. Baseline before this push was `f51ced3`
   ("Update LinkedIn profile link"); the 2026-09-03 push note below
   (`fb037e2`) was already one push behind that by the time this session
