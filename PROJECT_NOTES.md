@@ -5,11 +5,12 @@ professional footballer, based in Orel. Next.js (App Router) + Tailwind
 CSS v4 + TypeScript. Homepage, resume-row style (name/role, bio,
 Проекты/Работы/Контакты sections — note the labels were swapped
 2026-09-03, see below), Russian copy, targeting the Russian job market.
-`/personal-finance-tracker`, `/crypto-swap`, and `/subscription-tracker`
-are all rebuilt to the new look (the latter two embed real standalone
-apps live via iframe — see the 2026-09-03 embed entry near the end of
-this file); `/ghost-vpn` is still the older English jakub.kr-styled page
-and is currently unlinked from the homepage on purpose.
+`/personal-finance-tracker`, `/crypto-swap`, `/subscription-tracker`, and
+`/artist-subscription` are all rebuilt to the new look (the middle two
+embed real standalone apps live via iframe — see the 2026-09-03 embed
+entry near the end of this file); `/ghost-vpn` is still the older English
+jakub.kr-styled page and is currently unlinked from the homepage on
+purpose.
 
 Dev server: `npm run dev` (Turbopack), localhost:3000.
 Repo: https://github.com/evg1nn-eth/portfolio (public, pushed) —
@@ -603,6 +604,112 @@ Verified no horizontal overflow at 390px mobile width on all three
 touched pages (home, `/crypto-swap`, `/subscription-tracker`), zero
 console/page errors, full production build clean across all 7 routes.
 
+## 2026-09-09 — Artist Subscription case page added
+
+User added a fourth "Работы" row to the same Figma file
+(`7yjmgxhviePniTBtHHnZ9G`): a new list item `Artist Subscription` /
+`Исследование` (node `183:8175`, inserted **second** in the list —
+between Personal Finance Tracker and Crypto Swap, not appended at the
+end) plus a full case-page frame, `Artist Subscription ` — note the
+trailing space in the actual layer name (node `155:3871`, 1440×4017).
+Instruction was the same as every prior rebuild: transfer it "точь-в-точь
+как в Фигме." `get_metadata` on the whole page had grown to ~230K chars
+by now (more history accumulating on the one canvas) — read via a Python
+JSON-parse + regex over the saved tool-result file rather than paging
+through it by hand, same trick as scanning for the `Home` variants
+originally.
+
+**Caught and fixed a genuine content bug in the source file, confirmed
+with the user rather than silently propagating or silently
+"fixing" it**: the case page's own title text node reads literally
+"Subscription Tracker," not "Artist Subscription," while every other
+section (intro, Задача, Исследование, Решение) is unambiguously about
+subscribing to a music artist for release notifications — almost
+certainly a copy-paste leftover from duplicating the actual Subscription
+Tracker case page as a starting template. Verified visually via
+`get_screenshot` on just the title node before raising it, same
+threshold as the earlier "Мерцалов" vs "Мерзалов" spelling question.
+User chose **"Artist Subscription"** for the rendered title this time
+(unlike the name-typo case, this one wasn't a "keep it" answer) — don't
+assume the same instinct applies to the next Figma content mismatch,
+this was asked and answered per-instance, not a standing rule.
+
+The five image groups inside the case frame (`155:3877`, `176:3077`,
+`182:5602`, `182:4484` — four, not five; there's no fifth this time,
+unlike the PFT case's five) are, again, fully-composed Apple HIG /
+custom music-app-kit mockups (`iPhone 16 Pro` frame, `Status bar`,
+`ArtistCard`, `TrackInfo`, `PlayerControlBar`, a `Notifications`/
+`Lock Screen` component tree, etc.) — same category and same reasoning
+as the PFT rebuild's font-licensing/reconstruction-cost call not to
+rebuild them as live HTML. Exported all four directly via
+`download_assets` at `defaultScale: 4` (not 2 or 3) in one pass, having
+learned from the PFT lightbox-blur incident that under-scaling raster
+exports of vector mockups is the exact mistake to avoid up front rather
+than fixing after a complaint — got 1920–1920px-wide PNGs straight away,
+no later quality-fix round needed. Confirmed first via `get_metadata`
+that (unlike PFT) **no separate higher-resolution top-level duplicate
+frames exist** for this case elsewhere on the canvas — checked by
+searching for a unique string from the mockups (`"Playboi Carti"`) and
+for any sibling frame ≥900px wide near the case frame's canvas position;
+found none, so the embedded ~480px-wide groups are the only source and
+scale-4 export was the right (only) lever for resolution here, not a
+missed-duplicate situation. Named by content, not Figma's internal
+names, same as every image on this project: `intro.png` (dual-phone
+artist/player browse), `benchmark.png` (row of 5 streaming-service
+icons: Яндекс Музыка, Apple Music, Spotify, SoundCloud, VK Музыка),
+`solution.png` (notification-permission sheet + confirmation toast),
+`flow.png` (three-screen journey diagram, subscribe → permission →
+lock-screen notification, connected by the source file's own dashed
+connector lines) — saved to `src/app/images/artist-subscription/`.
+
+**Page structure was flattened differently than PFT, deliberately, to
+preserve real spacing differences in the source** — not a blind copy of
+the PFT pattern. PFT's Figma frame used a uniform 24px gap between every
+block including its images, so PFT's rebuild correctly pulled every
+image out to be its own flat top-level `.content` sibling. This frame's
+actual pixel data is not uniform: the `Бенчмаркинг` section's title →
+icon-row image → "Общий вывод" sub-heading are all spaced 16px apart
+(the same tier as a label-to-body gap), and `Гипотезы`'s title → body →
+nested `Решение` sub-section are also all 16px apart — i.e. those images
+are genuinely nested content within one cohesive block in the source, not
+independent top-level siblings, and flattening them to top-level would
+have silently turned their real 16px gaps into the container's uniform
+24px `gap-6`, which is exactly the kind of deviation "точь-в-точь" was
+meant to rule out. Measured every gap in the metadata's raw x/y/height
+numbers before deciding what to nest vs. flatten, not by eyeballing the
+screenshot. One exception: the gap between the `Решение` sub-section and
+its own cover image (`solution.png`) measured 24px, not 16px, so that
+image was kept as a top-level `.content` sibling (getting the standard
+24px automatically from the container) rather than nested inside the
+`Гипотезы` block with everything else. The one spot that measured a
+literal 0px gap in the source (between the end of the `Гипотезы`/
+`Решение` block and the final `flow.png`) was treated as a Figma
+auto-layout artifact and given the site's standard 24px instead — unlike
+the title-text bug above, this is a spacing nuance, not a content error,
+and every other section on every page of this project uses the same 24px
+system gap; didn't raise it as a separate question.
+
+New route: `src/app/artist-subscription/page.tsx`, reusing
+`CaseGallery`/`GalleryImage` (the FLIP-lightbox component built for
+`/personal-finance-tracker`) as-is — no changes needed to that component.
+`globals.css`'s `.content > *:nth-child(n)` stagger already covered up
+to 9 steps from the PFT rebuild; this page's 8 flat top-level blocks
+fit without extending it further.
+
+Homepage `Работы` list in `src/app/page.tsx` updated to match the new
+Figma order exactly: Personal Finance Tracker, **Artist Subscription**,
+Crypto Swap, Subscription Tracker (inserted, not appended).
+
+Verified with Puppeteer (`puppeteer-core` via `npm install --no-save`,
+uninstalled again after, `package.json`/lockfile confirmed untouched by
+`git status`/`git diff` before and after): homepage row order and hover
+dim/arrow-reveal behavior on the new row, zero console/page errors,
+`scrollWidth === clientWidth` on both the homepage and the new case page
+at 1280px and 390px, lightbox opens on click. Production build
+(`npm run build`) clean across all 9 routes including the new one.
+Screenshotted the full case page and cross-checked section order and
+image content against the Figma frame before calling it done.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
@@ -627,14 +734,14 @@ console/page errors, full production build clean across all 7 routes.
 
 ## Known open items
 
-- **Pushed to GitHub 2026-09-03 through commit `fb037e2`** ("Micro-tweak
-  Crypto Swap and Subscription Tracker case pages") — this covers the
-  whole day: homepage, `/personal-finance-tracker`, the lightbox and its
-  quality fix, the Проекты/Работы label swap, the Crypto Swap /
-  Subscription Tracker embeds, and their same-day micro-tweaks (dropped
-  demo background, forced line break, description text edit). `main` is
-  up to date with
-  `origin/main`.
+- **Pushed to GitHub 2026-09-09** (commit adding the Artist Subscription
+  case page + homepage row, see the dated entry above) — `main` is up to
+  date with `origin/main`. Baseline before this push was `f51ced3`
+  ("Update LinkedIn profile link"); the 2026-09-03 push note below
+  (`fb037e2`) was already one push behind that by the time this session
+  started (two more commits — a PROJECT_NOTES update, then the LinkedIn
+  fix — had landed same day before this session), kept as historical
+  record rather than rewritten.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
   in the Figma source frame itself (533px of content in a 480px frame),

@@ -14,6 +14,11 @@ const projects: ProjectItem[] = [
     role: "Концепт",
     href: "/personal-finance-tracker",
   },
+  {
+    name: "Artist Subscription",
+    role: "Исследование",
+    href: "/artist-subscription",
+  },
   { name: "Crypto Swap", role: "Вайб-код", href: "/crypto-swap" },
   {
     name: "Subscription Tracker",
