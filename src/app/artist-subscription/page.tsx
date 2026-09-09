@@ -50,7 +50,7 @@ const images = [
 
 export default function ArtistSubscription() {
   return (
-    <div className="flex min-h-screen w-full flex-col items-center px-4 pt-20 pb-4">
+    <div className="flex min-h-screen w-full flex-col items-center px-4 pt-20 pb-20">
       <div className="w-[480px] max-w-full">
         <CaseGallery images={images}>
           <div className="content flex w-full flex-col gap-6">
