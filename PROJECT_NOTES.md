@@ -913,6 +913,41 @@ just attached to the wrong section), a diff-by-presence check isn't
 enough — confirm which section each label is actually attached to, not
 just that the words appear somewhere on the page.**
 
+### Non-breaking spaces after short prepositions/conjunctions, same day
+
+User came back angry that "nothing changed" — turned out the actual ask
+was Russian typography, not another content diff: short prepositions,
+conjunctions, and particles (в, с, к, у, о, и, а, но, на, по, до, от,
+из, за, для, что, как, etc.) must never be left as the last word on a
+line — standard Russian editorial convention, glue them to the
+following word with ` ` (non-breaking space) so the renderer wraps
+them together instead of orphaning the short word.
+
+Applied programmatically rather than by hand — a Python regex pass
+(`(?<![а-яёА-ЯЁ])(word) (?=[а-яёА-ЯЁ])` for a fixed word list, longest-
+first to avoid partial overlaps) across all three page files, since
+doing this correctly by eye across ~30 paragraphs invites exactly the
+kind of miss that caused the last two rounds of complaints. Deliberately
+did **not** try to detect whether the Figma text nodes themselves
+contain literal U+00A0 characters — there's no tool access to the raw
+byte-level API response (only the flattened/rendered text `get_design_context`
+returns), so matching Figma's own nbsp placement byte-for-byte wasn't
+verifiable; applied the standard, well-known ruleset instead, which is
+what any correctly-typeset Russian design would use regardless.
+
+The regex touched `alt` text and `metadata.description` strings too
+(harmless — invisible to users, browsers don't care about nbsp there)
+since it matches on any Cyrillic text in the file, not just visible JSX
+children; left as-is rather than special-casing those out, not worth
+the complexity for a no-op.
+
+Verified: production build clean, zero console/page errors, no mobile
+overflow at 320px or 390px on all three pages (a glued preposition+word
+pair could in principle overflow a narrow viewport if it were long
+enough, checked explicitly rather than assuming nbsp is always safe),
+and eyeballed full-page screenshots of all three routes to confirm no
+paragraph now ends a line on a bare preposition/conjunction.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
