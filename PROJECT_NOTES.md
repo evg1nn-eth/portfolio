@@ -892,6 +892,27 @@ gallery images register with the lightbox, zero console/page errors,
 `scrollWidth === clientWidth` at 1280px and 390px on all three touched
 pages. Production build clean across all 9 routes.
 
+**Missed one real bug in that pass, caught immediately by the user:**
+the homepage's "Работы" and "Проекты" labels were left swapped — every
+other homepage string was re-verified correctly against the fresh Figma
+pull above, but these two labels already existed in the code (from the
+2026-09-03 swap, see that entry) and carried over unexamined instead of
+being re-checked against the just-fetched Figma text, which now has them
+the other way: **"Работы" is the single Ghost VPN row, "Проекты" is the
+three-item list** — the reverse of the 2026-09-03 decision, evidently
+changed back in Figma at some point in between. Fixed by swapping the
+two `<p>` labels in `src/app/page.tsx` (content underneath unchanged).
+Re-verified this time with an actual pixel-level screenshot diff against
+a fresh Figma render of `82:7838`, not just a text-string read, and
+separately re-walked every paragraph on both case pages character-by-
+character against the exact strings captured from `get_design_context`
+earlier in the same pass — those all matched already. **Lesson: when a
+page has pre-existing strings that happen to already match Figma's
+vocabulary (both "Работы" and "Проекты" existed on the site before,
+just attached to the wrong section), a diff-by-presence check isn't
+enough — confirm which section each label is actually attached to, not
+just that the words appear somewhere on the page.**
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
