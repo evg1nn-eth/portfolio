@@ -948,6 +948,62 @@ enough, checked explicitly rather than assuming nbsp is always safe),
 and eyeballed full-page screenshots of all three routes to confirm no
 paragraph now ends a line on a bare preposition/conjunction.
 
+### That whole nbsp pass above was wrong — replaced same day with the actual Figma source
+
+**The self-invented word-list regex was a mistake the user was right to be
+furious about.** They had already gone into Figma with an nbsp/typography
+plugin and hand-placed non-breaking spaces themselves — the correct move
+was to pull that exact text out, not guess at a "standard Russian
+typography" ruleset from scratch. Two concrete ways the guess was wrong,
+confirmed once the real source was checked: the plugin's nbsp placement
+is **inconsistent by design** (home bio paragraph 1 is fully glued,
+paragraph 2 has zero nbsp at all — not every paragraph got the treatment,
+seemingly by choice or which blocks the user happened to run the plugin
+on) and it glues words the regex's dictionary didn't even cover (short
+pronouns like "мне", "всё", "она", longer conjunctions like "чтобы" —
+not just classic 1-3 letter prepositions). No amount of a smarter
+hand-built word list would have reproduced this; it had to come from the
+file itself.
+
+**Extracting it required solving a real problem: how do you tell a
+non-breaking space (U+00A0) apart from a regular space when the tool
+result just renders as text?** You can't, by eye — they're visually
+identical. Solution: force `get_metadata` to save to a file (fetching
+the whole page `0:1` guarantees this, since it's always >200K chars),
+then process that file with Python and inspect actual codepoints
+(`" " in text`) rather than trying to visually spot the difference
+or trust manual re-typing of Cyrillic paragraphs (typing from "memory"
+risks silently normalizing nbsp back to a regular space — copying raw
+bytes through a script doesn't). Extracted every relevant text node
+(id → exact string, nbsp intact) into a lookup table via regex on the
+`<text id="..." name="...">` metadata format, `html.unescape()`'d for
+the `&#39;`-style entities Figma emits.
+
+Applying the fix used the same file-driven approach, not manual
+edits: for each node, built a whitespace/nbsp-insensitive regex from the
+already-known plain-text version (old value with nbsp collapsed back to
+regular spaces) to locate the paragraph in each `page.tsx` regardless of
+which space variant or line-wrapping was currently there, and replaced
+the whole match with the exact byte string pulled from Figma. 45 of 45
+target nodes matched and replaced on the first pass across all three
+files — homepage (2 nodes), PFT (10, including both `CaseSection`
+titles, e.g. "Контекст и роль" and "Как делал" carry nbsp too, not just
+body paragraphs), Artist Subscription (33). Collapsed each paragraph
+back to one unwrapped source line in the process (JSX collapses
+surrounding whitespace at render time regardless, so this doesn't change
+output — only sacrifices some source-file line-wrap prettiness, which
+wasn't worth re-implementing by hand on top of getting the bytes right).
+
+**Lesson for next time a "make the text match X exactly" request comes
+in and X is Figma text with any unusual whitespace, dashes, or similar
+invisible-looking characters: check whether the user already edited the
+source before assuming a rule needs to be invented, and extract via a
+metadata dump + script, never by eye.** This project already knew to
+preserve U+2011 (non-breaking hyphen, e.g. "где‑то", "по‑другому") when
+it showed up in earlier Figma text — should have applied the same
+"don't retype what you can extract" instinct to spaces here from the
+start instead of reaching for a plausible-sounding general rule.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
