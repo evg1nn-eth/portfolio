@@ -760,6 +760,138 @@ still shows "В разработке" post-refactor, zero console/page errors,
 `scrollWidth === clientWidth` at 1280px and 390px. Production build
 clean.
 
+## 2026-09-21 — Full re-sync: homepage, PFT, and Artist Subscription rebuilt from an edited Figma file, plus the missing section dividers
+
+User had gone back into the same Figma file between sessions and reworked
+content across the board — new copy in places, a project dropped from the
+homepage list, both case-study frames functionally rewritten — then asked
+for a full re-pass: re-check every frame, bring text/screens back in sync
+("текст менял, где-то что-то убрал скрин"), keep every existing animation/
+hover/effect untouched, and **fix a divider bug from the original
+2026-09-03 build**: the hairline `border-b` dividers between sections
+(present on the homepage since day one) had never been added to the two
+Figma-sourced case pages — missed originally and not caught by the user
+either until now. Explicit instruction, in caps: nothing invented, match
+Figma exactly.
+
+**Re-read the whole Figma page fresh rather than trusting prior node ids**
+— `get_metadata` on `0:1` had grown to ~220K chars (still one shared
+canvas accumulating history) and, crucially, **`Personal Finance
+Tracker`'s node id had changed** (`82:7881` → `192:3628` — the old frame
+was gone, this was a genuinely new one, not an edit-in-place) while
+`Artist Subscription` kept its id (`155:3871`) but grew 4017→4167px
+tall. A new top-level `Merzalov CV_RU` frame (595×842, A4) also appeared
+on the canvas — noted but out of scope (user asked about "кейсы", this
+is a CV/resume doc, not a case page) and not touched.
+
+**Settled the divider question definitively before writing any code**,
+since it's the one thing explicitly reported as a bug and worth getting
+exactly right rather than guessing: pulled `get_design_context` on
+several individual blocks specifically to inspect their wrapper
+classes (not just positions from metadata, which can't show borders).
+Confirmed pattern, consistent across both the homepage (already correct)
+and both case pages: **any block headed by its own `#999` label gets
+`border-b border-[#f5f5f5] pb-[24px]`, unless it's the last such block
+on the page** — checked positively on PFT's header, all three PFT text
+sections, Artist Subscription's header, Artist Subscription's header+hero
+wrapper (which nests a second, outer border around the already-bordered
+header — a genuine double-divider, confirmed not a misread), and Artist
+Subscription's "Откуда взялась задача" section. Checked **negatively**
+on a plain image block (PFT's hero `192:3635` came back with zero border
+classes) — plain screenshots between sections never get their own
+divider, only labeled text sections do. This distinction (label-blocks
+bordered, image-blocks not) is what actually got missed originally, not
+a global "no dividers at all" omission.
+
+**Personal Finance Tracker — rebuilt as a new page from the new frame,
+not patched.** Copy changed throughout (new intro line, "Проблема" →
+renamed "Как делал", "Результаты" gained a second paragraph). The page
+title/h1 color also changed from `#5c5c5c` to `#999` in the new frame —
+confirmed via `get_design_context`, applied to both case pages, **not**
+to the homepage's own name heading (Home's `82:7838` still specifies
+`#5c5c5c` there, unchanged — don't conflate the two). All five images
+re-exported fresh from the five embedded ~480×270 groups directly
+(`download_assets`, `defaultScale: 4`, same lesson from the earlier
+Artist Subscription build: scale up front, don't wait for a blur
+complaint) — same five subjects, same file names
+(`onboarding/home-flow/stats/settings/ui-kit.png`), overwritten in place.
+`ui-kit.png` still shows the same left/right clipping as before (533px
+of content in a 480px frame) — confirmed again as a genuine Figma-source
+overflow, not an export artifact, left as-is per standing precedent.
+Added `border-b` to the header and all three text sections (5 of 9
+top-level blocks now bordered, the 4 images not) — verified via
+`getComputedStyle(...).borderBottomWidth` across `.content`'s direct
+children, not just eyeballing: `[1,0,1,1,1,0,0,0,0]`px, exactly matching
+the predicted pattern.
+
+**Artist Subscription — functionally a different case page**, not a
+content tweak. New section names throughout ("Задача" → "Откуда взялась
+задача", "Исследование" → "Как разбирался", "Гипотезы" restructured,
+"Решение" split out as its own top-level section with a new nested
+"Почему это работает" sub-section applying Nir Eyal's hook model,
+"Рефлексия" → "Что понял"). The `Бенчмаркинг` label is gone entirely —
+its content now lives inside "Как разбирался" as an image, and that
+image itself changed shape: **the 5-icon hover-tooltip row built two
+turns ago (`WorkTooltip`, per-service copy the user typed directly into
+chat) is gone, replaced by a static 4-logo 2×2 grid with the comparison
+text always visible underneath each logo, straight from a new Figma
+image** — Apple Music dropped out of the comparison entirely (4 services
+now, not 5). This is exactly the kind of change "точно так же как в
+Figma" is for: the interactive tooltip pattern wasn't reference material
+being carried forward, it was this project's own bridge for missing
+Figma content last time, and the new Figma content superseded it — kept
+`WorkTooltip.tsx` itself untouched since the homepage's `Q3 2026` tip
+still depends on it. Six images total now (was four): `intro.png`
+(unchanged subject, re-exported since the mockup itself changed
+slightly), two brand-new data/diagram graphics that aren't phone
+mockups at all — `stats-card.png` (a plain two-stat "35% / 49%" card,
+not a UI screenshot) and `hypotheses-table.png` (a 4-row comparison
+table) — `benchmark.png` (the new logo grid, replacing the old
+individual SVG icons, which were deleted), `solution.png` (now a single
+image combining what used to be two separate exports — the notification
+sheet/toast mockup and the lock-screen notification — into one three-up
+row), and `hook-loop.png` (new: the trigger→action→reward→investment
+diagram for the "Почему это работает" section). All via `download_assets`
+at `defaultScale: 4` directly on the embedded groups — no separate
+high-res duplicate frames existed for this case this time (checked, none
+found), so scale-4 direct export was the only and correct lever, same
+conclusion as before just reconfirmed.
+
+**Gap values were measured per-section from raw metadata x/y/height
+numbers, not assumed uniform** — this Figma revision is visibly less
+consistent about it than the last one. Most sections use 24px between a
+paragraph run and a following image and 16px for label→body, matching
+the established system — but "Гипотезы" uses 16px around its comparison-
+table image where every other section uses 24px, and "Что понял" uses
+8px between its own label and body where every other section on both
+pages uses 16px. Reproduced both exactly as measured rather than
+normalizing them to match the majority pattern — the instruction was
+literal fidelity, not idealized consistency, and this project has hit
+this exact "measure, don't assume" lesson before (see the 2026-09-09
+Artist Subscription entry above on nested vs. flattened image spacing).
+
+**Homepage**: bio rewritten again (shorter, drops the earlier "создаю
+понятные, интуитивные мобильные интерфейсы для цифровых продуктов" /
+"логику продукта и пользовательские сценарии" phrasing for a terser
+version — this is now the *third* bio rewrite on this project, each
+time replacing the previous wholesale rather than editing it, per
+Figma). **Crypto Swap removed from the "Работы" list** — the Figma
+row is simply gone now, list is back down to three items (Personal
+Finance Tracker, Artist Subscription, Subscription Tracker). Followed
+the established Ghost VPN precedent exactly: `/crypto-swap` and
+`public/demos/crypto-swap/` are untouched on disk, just unlinked — don't
+delete them without being asked, and don't assume this means Crypto Swap
+is "cancelled," only that it's off the homepage list for now.
+
+Verified with Puppeteer (`puppeteer-core` via `npm install --no-save`,
+uninstalled after, `package.json`/lockfile diff-checked clean before and
+after): homepage row text/count, PFT divider pattern (above), PFT
+lightbox still opens, Artist Subscription `h1` renders "Artist
+Subscription" in `rgb(153,153,153)` (`#999`), all 6 Artist Subscription
+gallery images register with the lightbox, zero console/page errors,
+`scrollWidth === clientWidth` at 1280px and 390px on all three touched
+pages. Production build clean across all 9 routes.
+
 ## Hard style rules (repeatedly enforced, don't deviate without asking)
 
 - **No typographic hierarchy anywhere.** No H1/H2 size jumps, no bold
@@ -784,14 +916,20 @@ clean.
 
 ## Known open items
 
+- **Pushed to GitHub 2026-09-21** (the homepage/PFT/Artist Subscription
+  re-sync + divider fix above) — `main` is up to date with `origin/main`.
+  A new `Merzalov CV_RU` frame (595×842) exists on the shared Figma
+  canvas as of this entry, unrelated to any case page — flagged, not
+  built; ask what it's for before touching it.
 - **Pushed to GitHub 2026-09-09** through the Бенчмаркинг-icons commit
   (see the two dated entries above: the Artist Subscription case page +
-  homepage row, then the interactive benchmark icons) — `main` is up to
-  date with `origin/main`. Baseline before this push was `f51ced3`
-  ("Update LinkedIn profile link"); the 2026-09-03 push note below
-  (`fb037e2`) was already one push behind that by the time this session
-  started (two more commits — a PROJECT_NOTES update, then the LinkedIn
-  fix — had landed same day before this session), kept as historical
+  homepage row, then the interactive benchmark icons) — superseded by
+  the entry above, kept as historical record. Baseline before that push
+  was `f51ced3` ("Update LinkedIn profile link"); the 2026-09-03 push
+  note below (`fb037e2`) was already one push behind that by the time
+  that session started (two more commits — a PROJECT_NOTES update, then
+  the LinkedIn fix — had landed same day before that session), kept as
+  historical
   record rather than rewritten.
 - `ui-kit.png` under `/personal-finance-tracker` (see above) has a few
   component swatches clipped at its left/right edges — a genuine overflow
